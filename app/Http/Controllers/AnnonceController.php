@@ -49,4 +49,45 @@ class AnnonceController extends Controller
     {
         return view('annonces.show', compact('annonce'));
     }
+
+    public function edit(Annonce $annonce)
+    {
+        $this->authorize('update', $annonce);
+        return view('annonces.edit', compact('annonce'));
+    }
+
+    public function update(Request $request, Annonce $annonce)
+    {
+        $this->authorize('update', $annonce);
+
+        $request->validate([
+            'titre' => 'required|string|max:255',
+            'description' => 'required|string',
+            'adresse' => 'required|string|max:255',
+            'ville' => 'required|string|max:255',
+            'prix_par_nuit' => 'required|numeric|min:0',
+            'nombre_de_chambres' => 'required|integer|min:1',
+            'image_url' => 'nullable|url',
+        ]);
+
+        $annonce->update([
+            'titre' => $request->titre,
+            'description' => $request->description,
+            'adresse' => $request->adresse,
+            'ville' => $request->ville,
+            'prix_par_nuit' => $request->prix_par_nuit,
+            'nombre_de_chambres' => $request->nombre_de_chambres,
+            'image' => $request->image_url,
+        ]);
+
+        return redirect()->route('annonces.show', $annonce)->with('success', 'Annonce mise à jour !');
+    }
+
+    public function destroy(Annonce $annonce)
+    {
+        $this->authorize('delete', $annonce);
+        $annonce->delete();
+
+        return redirect()->route('home')->with('success', 'Annonce supprimée !');
+    }
 }

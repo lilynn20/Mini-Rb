@@ -7,10 +7,18 @@ Ce projet est une application web simplifiée type Airbnb nommée "mini rb", dé
 - **Frontend** : Utilisation de Blade (moteur de template Laravel) avec Tailwind CSS via CDN. 
 - **PAS de frameworks JS complexes** (Vue, React) ni de gestionnaires de paquets frontend (NPM/Yarn) pour les vues, afin de rester sur une architecture PHP pure.
 - **Authentification** : Gérée manuellement via `AuthController` (pas de Laravel Breeze/Jetstream pour éviter les dépendances NPM).
+- **Rôles & Permissions** : Système de rôles intégré (`client`, `admin`).
+  - Middleware `AdminMiddleware` pour protéger les zones sensibles.
+  - `AnnoncePolicy` pour restreindre la modification/suppression des annonces aux propriétaires ou aux administrateurs.
 
 ## Structure Actuelle
 - **Modèles** :
-  - `User` : Gère les utilisateurs.
+  - `User` : Gère les utilisateurs et leurs rôles.
+>>>>>>> SEARCH
+  - `AuthController` : Inscription, Connexion, Déconnexion.
+  - `AnnonceController` : Affichage de la liste, détails, et création d'annonces.
+  - `AuthController` : Inscription, Connexion, Déconnexion.
+  - `AnnonceController` : Gestion complète des annonces (CRUD) avec vérification des permissions.
   - `Annonce` : Gère les logements (titre, description, prix, ville, image URL).
 - **Contrôleurs** :
   - `AuthController` : Inscription, Connexion, Déconnexion.

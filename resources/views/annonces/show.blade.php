@@ -21,7 +21,19 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div class="md:col-span-2">
-                <h2 class="text-2xl font-bold mb-2">Logement entier proposé par {{ $annonce->user->name }}</h2>
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-2xl font-bold">Logement entier proposé par {{ $annonce->user->name }}</h2>
+                    @can('update', $annonce)
+                        <div class="flex space-x-2">
+                            <a href="{{ route('annonces.edit', $annonce) }}" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">Modifier</a>
+                            <form action="{{ route('annonces.destroy', $annonce) }}" method="POST" onsubmit="return confirm('Supprimer cette annonce ?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-semibold hover:bg-red-100 transition">Supprimer</button>
+                            </form>
+                        </div>
+                    @endcan
+                </div>
                 <p class="text-gray-600 mb-6 border-b pb-6">{{ $annonce->nombre_de_chambres }} chambre(s)</p>
                 
                 <h3 class="text-xl font-bold mb-4">À propos de ce logement</h3>

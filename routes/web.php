@@ -10,6 +10,9 @@ Route::get('/', [AnnonceController::class, 'index'])->name('home');
 Route::middleware(['auth'])->group(function () {
     Route::get('/annonces/create', [AnnonceController::class, 'create'])->name('annonces.create');
     Route::post('/annonces', [AnnonceController::class, 'store'])->name('annonces.store');
+    Route::get('/annonces/{annonce}/edit', [AnnonceController::class, 'edit'])->name('annonces.edit');
+    Route::put('/annonces/{annonce}', [AnnonceController::class, 'update'])->name('annonces.update');
+    Route::delete('/annonces/{annonce}', [AnnonceController::class, 'destroy'])->name('annonces.destroy');
 });
 
 Route::get('/annonces/{annonce}', [AnnonceController::class, 'show'])->name('annonces.show');
