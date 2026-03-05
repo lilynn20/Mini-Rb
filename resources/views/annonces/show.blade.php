@@ -42,7 +42,7 @@
 
             <div class="md:col-span-1">
                 <div class="border rounded-2xl p-6 shadow-xl sticky top-10">
-                    <p class="text-2xl font-bold mb-6"><span class="text-gray-900">{{ $annonce->prix_par_nuit }}Dh</span> <span class="text-gray-500 font-normal text-base">par nuit</span></p>
+                    <p class="text-2xl font-bold mb-6"><span class="text-gray-900">{{ $annonce->prix_par_nuit }}$</span> <span class="text-gray-500 font-normal text-base">par nuit</span></p>
                     
                     <form action="#" method="POST">
                         @csrf

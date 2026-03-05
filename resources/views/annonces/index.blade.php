@@ -44,7 +44,7 @@
                     </div>
                     <h3 class="font-bold text-gray-900">{{ $annonce->ville }}</h3>
                     <p class="text-gray-500 text-sm truncate">{{ $annonce->titre }}</p>
-                    <p class="mt-1 font-semibold"><span class="text-gray-900">{{ $annonce->prix_par_nuit }}€</span> <span class="text-gray-500 font-normal">par nuit</span></p>
+                    <p class="mt-1 font-semibold"><span class="text-gray-900">{{ $annonce->prix_par_nuit }}$</span> <span class="text-gray-500 font-normal">par nuit</span></p>
                 </a>
             @empty
                 <p class="text-gray-500 col-span-full text-center py-10">Aucune annonce disponible pour le moment.</p>

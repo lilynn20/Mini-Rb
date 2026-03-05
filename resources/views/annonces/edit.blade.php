@@ -41,7 +41,7 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-1">Prix par nuit (Dh)</label>
+                        <label class="block text-gray-700 font-semibold mb-1">Prix par nuit ($)</label>
                         <input type="number" name="prix_par_nuit" value="{{ old('prix_par_nuit', $annonce->prix_par_nuit) }}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" min="0" required>
                     </div>
                     <div>
