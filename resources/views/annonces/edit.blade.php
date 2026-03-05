@@ -14,7 +14,7 @@
     <main class="max-w-2xl mx-auto px-8 py-10 bg-white shadow-md rounded-xl mt-10">
         <h1 class="text-2xl font-bold mb-6">Modifier votre annonce</h1>
 
-        <form action="{{ route('annonces.update', $annonce) }}" method="POST">
+        <form action="{{ route('annonces.update', $annonce) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="space-y-4">
@@ -51,8 +51,12 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-1">URL de l'image</label>
-                    <input type="url" name="image_url" value="{{ old('image_url', $annonce->image) }}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none">
+                    <label class="block text-gray-700 font-semibold mb-1">Image du logement (laisser vide pour conserver l'actuelle)</label>
+                    <input type="file" name="image" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" accept="image/*">
+                    @if($annonce->image)
+                        <p class="text-xs text-gray-500 mt-2 text-center">Image actuelle :</p>
+                        <img src="{{ Storage::url($annonce->image) }}" class="h-20 mx-auto rounded mt-1">
+                    @endif
                 </div>
             </div>
 

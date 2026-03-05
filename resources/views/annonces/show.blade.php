@@ -16,7 +16,11 @@
         <p class="text-gray-600 mb-6 underline font-semibold">{{ $annonce->adresse }}, {{ $annonce->ville }}</p>
 
         <div class="rounded-2xl overflow-hidden mb-10 h-[500px]">
-            <img src="{{ $annonce->image ?? 'https://via.placeholder.com/1200x800?text=Pas+d+image' }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover">
+            @if($annonce->image)
+                <img src="{{ Storage::url($annonce->image) }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover">
+            @else
+                <img src="https://via.placeholder.com/1200x800?text=Pas+d+image" alt="{{ $annonce->titre }}" class="w-full h-full object-cover">
+            @endif
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
