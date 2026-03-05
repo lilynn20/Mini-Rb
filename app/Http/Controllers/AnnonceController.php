@@ -6,9 +6,12 @@ use App\Models\Annonce;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AnnonceController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(Request $request)
     {
         $query = Annonce::latest();
