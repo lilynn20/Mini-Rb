@@ -18,6 +18,24 @@
                 @error('name') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
             </div>
             <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Choisir votre rôle</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="role" value="voyageur" class="peer hidden" checked>
+                        <div class="p-2 text-center border rounded-lg peer-checked:border-rose-500 peer-checked:bg-rose-50 hover:bg-gray-50 transition text-sm">Voyageur</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="role" value="hote" class="peer hidden">
+                        <div class="p-2 text-center border rounded-lg peer-checked:border-rose-500 peer-checked:bg-rose-50 hover:bg-gray-50 transition text-sm">Hôte</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="role" value="admin" class="peer hidden">
+                        <div class="p-2 text-center border rounded-lg peer-checked:border-rose-500 peer-checked:bg-rose-50 hover:bg-gray-50 transition text-sm">Admin</div>
+                    </label>
+                </div>
+                @error('role') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+            </div>
+            <div class="mb-4">
                 <label class="block text-gray-700">Email</label>
                 <input type="email" name="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500" required>
                 @error('email') <p class="text-red-500 text-sm">{{ $message }}</p> @enderror
