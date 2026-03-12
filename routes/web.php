@@ -15,6 +15,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/annonces/{annonce}', [AnnonceController::class, 'destroy'])->name('annonces.destroy');
 });
 
+
+Route::post('/annonces/{annonce}/reserver', [\App\Http\Controllers\ReservationController::class, 'store'])->middleware('auth')->name('reservations.store');
 Route::get('/annonces/{annonce}', [AnnonceController::class, 'show'])->name('annonces.show');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');

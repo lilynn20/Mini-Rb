@@ -54,11 +54,11 @@
                             <div class="grid grid-cols-2 border-b">
                                 <div class="p-3 border-r">
                                     <label class="block text-[10px] font-bold uppercase">Arrivée</label>
-                                    <input type="date" name="date_debut" class="w-full text-sm outline-none">
+                                        <input type="date" name="start_date" class="w-full text-sm outline-none" required>
                                 </div>
                                 <div class="p-3">
                                     <label class="block text-[10px] font-bold uppercase">Départ</label>6
-                                    <input type="date" name="date_fin" class="w-full text-sm outline-none">
+                                        <input type="date" name="end_date" class="w-full text-sm outline-none" required>
                                 </div>
                             </div>
                             <div class="p-3">
@@ -72,7 +72,7 @@
                             </div>
                         </div>
 
-                        <button type="button" class="w-full bg-rose-500 text-white py-3 rounded-lg font-bold hover:bg-rose-600 transition" onclick="alert('Fonctionnalité de réservation bientôt disponible !')">Réserver</button>
+                            <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg font-bold hover:bg-rose-600 transition">Réserver</button>
                     </form>
 
                     <p class="text-center text-gray-500 text-sm mt-4">Aucun montant ne vous sera débité pour le moment</p>

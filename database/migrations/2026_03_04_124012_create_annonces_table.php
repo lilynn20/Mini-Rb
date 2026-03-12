@@ -28,9 +28,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('annonce_id')->constrained()->onDelete('cascade');
-            $table->date('date_debut');
-            $table->date('date_fin');
-            $table->decimal('prix_total', 10, 2);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->decimal('total_price', 10, 2);
+            $table->enum('status', ['pending', 'accepted', 'refused', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }
