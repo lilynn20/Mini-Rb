@@ -36,9 +36,8 @@ class ReservationController extends Controller
             return back()->withErrors(['dates' => 'Ces dates sont déjà réservées pour cette annonce.']);
         }
 
-        // Calculate total price
-        $days = (new \DateTime($request->start_date))->diff(new \DateTime($request->end_date))->days;
-        $total = $days * $annonce->prix_par_nuit;
+        // Calculate total price using model method
+        $total = \App\Models\Reservation::calculateTotalPrice($request->start_date, $request->end_date, $annonce->prix_par_nuit);
 
         Reservation::create([
             'annonce_id' => $annonce->id,
@@ -48,6 +47,9 @@ class ReservationController extends Controller
             'total_price' => $total,
             'status' => 'pending',
         ]);
+
+        // Example: get blocked dates (not used here, but available)
+        // $blockedDates = \App\Models\Reservation::getBlockedDates($annonce->id);
 
         return redirect()->route('annonces.show', $annonce)->with('success', 'Réservation demandée !');
     }
