@@ -2,34 +2,42 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <style>
-        body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 40px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo { color: #f43f5e; font-size: 28px; font-weight: bold; }
-        .btn { display: inline-block; background: #f43f5e; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; }
-        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification email - Mini-Rb</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta http-equiv="refresh" content="5">
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">Mini-Rb</div>
-        </div>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md text-center">
+        <div class="text-rose-500 font-bold text-2xl mb-6">Mini-Rb</div>
 
-        <h2>✉️ Vérifiez votre adresse email</h2>
-        <p>Bonjour <strong>{{ $userName }}</strong>,</p>
-        <p>Merci de vous être inscrit sur Mini-Rb. Cliquez sur le bouton ci-dessous pour vérifier votre adresse email et activer votre compte.</p>
+        <div class="text-5xl mb-4">📧</div>
+        <h2 class="text-2xl font-bold mb-2">Vérifiez votre email</h2>
+        <p class="text-gray-500 mb-2">
+            Nous avons envoyé un lien de vérification à votre adresse email.
+            Cliquez sur le lien pour activer votre compte.
+        </p>
+        <p class="text-gray-400 text-sm mb-6">Cette page se rafraîchit automatiquement toutes les 5 secondes.</p>
 
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="{{ $verificationUrl }}" class="btn">Vérifier mon email</a>
-        </div>
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
 
-        <p style="color: #999; font-size: 13px;">Ce lien expire dans 60 minutes. Si vous n'avez pas créé de compte, ignorez cet email.</p>
+        <form action="{{ route('verification.send') }}" method="POST">
+            @csrf
+            <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg font-semibold hover:bg-rose-600 transition">
+                Renvoyer le lien de vérification
+            </button>
+        </form>
 
-        <div class="footer">
-            <p>&copy; 2026 Mini-Rb. Tous droits réservés.</p>
-        </div>
+        <form action="{{ route('logout') }}" method="POST" class="mt-4">
+            @csrf
+            <button type="submit" class="text-gray-400 hover:text-gray-600 text-sm">
+                Se déconnecter
+            </button>
+        </form>
     </div>
 </body>
 </html>
