@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Mail\WelcomeMail;
-use Illuminate\Auth\Events\Registered;
+use App\Mail\VerifyEmailMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 
 class AuthController extends Controller
 {
@@ -32,13 +33,21 @@ class AuthController extends Controller
             'role'     => 'user',
         ]);
 
-        // Send email verification
-        event(new Registered($user));
+        Auth::login($user);
 
         // Send welcome email
         Mail::to($user->email)->send(new WelcomeMail($user));
 
-        Auth::login($user);
+        // Send verification email
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id'   => $user->getKey(),
+                'hash' => sha1($user->getEmailForVerification()),
+            ]
+        );
+        Mail::to($user->email)->send(new VerifyEmailMail($verificationUrl, $user->name));
 
         return redirect()->route('verification.notice');
     }
@@ -58,7 +67,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Redirect to verification notice if not verified
             if (!Auth::user()->hasVerifiedEmail()) {
                 return redirect()->route('verification.notice');
             }
@@ -69,6 +77,28 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Les identifiants ne correspondent pas.',
         ]);
+    }
+
+    public function resendVerification(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->route('home');
+        }
+
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id'   => $request->user()->getKey(),
+                'hash' => sha1($request->user()->getEmailForVerification()),
+            ]
+        );
+
+        Mail::to($request->user()->email)->send(
+            new VerifyEmailMail($verificationUrl, $request->user()->name)
+        );
+
+        return back()->with('success', 'Lien de vérification renvoyé !');
     }
 
     public function logout(Request $request)

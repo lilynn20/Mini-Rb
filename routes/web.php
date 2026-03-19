@@ -23,13 +23,12 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect()->route('home')->with('success', 'Email vérifié avec succès !');
+    return redirect()->route('home')->with('success', 'Email vérifié avec succès ! Bienvenue sur Mini-Rb 🎉');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return back()->with('success', 'Lien de vérification renvoyé !');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Annonces CRUD
@@ -56,4 +55,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/admin/annonces/{id}', [\App\Http\Controllers\AdminController::class, 'deleteAnnonce'])->name('admin.annonces.delete');
 });
 
+// Must be AFTER the auth group so /annonces/create is matched first
 Route::get('/annonces/{annonce}', [AnnonceController::class, 'show'])->name('annonces.show');
