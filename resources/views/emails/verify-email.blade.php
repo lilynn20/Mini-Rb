@@ -38,6 +38,9 @@
                 Se déconnecter
             </button>
         </form>
+        <a href="{{ route('home') }}" class="block mt-3 text-rose-500 hover:text-rose-700 font-semibold text-sm">
+    Retourner à l'accueil →
+</a>
     </div>
 </body>
 </html>
