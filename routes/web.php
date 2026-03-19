@@ -36,4 +36,9 @@ Route::middleware(['auth'])->group(function () {
     // Avis (reviews)
     Route::post('/reservations/{id}/avis', [AvisController::class, 'store'])->name('avis.store');
     Route::delete('/avis/{id}', [AvisController::class, 'destroy'])->name('avis.destroy');
+
+    // Admin dashboard
+    Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
+    Route::delete('/admin/users/{id}', [\App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
+    Route::delete('/admin/annonces/{id}', [\App\Http\Controllers\AdminController::class, 'deleteAnnonce'])->name('admin.annonces.delete');
 });
