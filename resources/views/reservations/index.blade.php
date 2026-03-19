@@ -13,7 +13,7 @@
             <a href="{{ route('reservations.index') }}" class="text-rose-500 font-semibold border-b-2 border-rose-500">Mes Réservations</a>
             <a href="{{ route('annonces.create') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Publier</a>
             <span class="text-gray-400">|</span>
-            <span class="text-gray-700 font-semibold">{{ Auth::user()->name }}</span>
+            <a href="{{ route('profile') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">{{ Auth::user()->name }}</a>
             <form action="{{ route('logout') }}" method="POST" class="inline">
                 @csrf
                 <button type="submit" class="text-gray-500 hover:text-rose-500 transition font-semibold text-sm">Déconnexion</button>

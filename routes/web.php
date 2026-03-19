@@ -53,7 +53,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
     Route::delete('/admin/users/{id}', [\App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
     Route::delete('/admin/annonces/{id}', [\App\Http\Controllers\AdminController::class, 'deleteAnnonce'])->name('admin.annonces.delete');
-});
+
+    // Profile
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    });
 
 // Must be AFTER the auth group so /annonces/create is matched first
 Route::get('/annonces/{annonce}', [AnnonceController::class, 'show'])->name('annonces.show');
