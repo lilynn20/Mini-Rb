@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            Log::info('Sending verification email to: ' . $notifiable->email);
+            
             return (new MailMessage)
                 ->subject('✉️ Vérifiez votre adresse email - Mini-Rb')
                 ->greeting('Bonjour ' . $notifiable->name . ' !')
