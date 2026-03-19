@@ -1,0 +1,5 @@
+db_public_url:shortline.proxy.rlwy.net:32404
+port:3306
+host:mysql.railway.internal
+user:root
+password:YFHxMPVVFliTVAvnCnIFSNBTIJqfZqdg
