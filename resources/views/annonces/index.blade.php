@@ -11,7 +11,10 @@
     <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b">
         <a href="{{ route('home') }}" class="text-rose-500 font-bold text-2xl">Mini-Rb</a>
         <div class="flex items-center space-x-4">
-            @auth
+                @auth
+                @if(Auth::user()->role === 'admin')
+                    <a href="{{ route('admin.index') }}" class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold hover:bg-purple-200 transition">Dashboard Admin</a>
+                @endif
                 <a href="{{ route('reservations.index') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Mes Réservations</a>
                 <a href="{{ route('annonces.create') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Mettre mon logement sur Mini-Rb</a>
                 <span class="text-gray-400">|</span>
