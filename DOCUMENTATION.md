@@ -176,3 +176,61 @@ php artisan migrate
 php artisan storage:link
 php artisan serve
 ```
+---
+
+## 10. Déploiement (Railway)
+
+### Prérequis
+- Compte [Railway](https://railway.app)
+- Dépôt GitHub avec le projet
+
+### Étapes
+
+1. **Pousser le projet sur GitHub**
+```bash
+git add .
+git commit -m "Ready for deployment"
+git push
+```
+
+2. **Créer un nouveau projet sur Railway**
+   - Aller sur [railway.app](https://railway.app)
+   - Cliquer "New Project" → "Deploy from GitHub repo"
+   - Sélectionner le dépôt Mini-Rb
+
+3. **Ajouter une base de données MySQL**
+   - Dans le projet Railway, cliquer "New" → "Database" → "MySQL"
+   - Railway génère automatiquement les variables de connexion
+
+4. **Configurer les variables d'environnement**
+   Dans Railway → Settings → Variables, ajouter :
+
+   | Variable | Valeur |
+   |---|---|
+   | APP_KEY | (générer avec `php artisan key:generate --show`) |
+   | APP_ENV | production |
+   | APP_DEBUG | false |
+   | APP_URL | https://votre-app.railway.app |
+   | DB_CONNECTION | mysql |
+   | DB_HOST | (fourni par Railway MySQL) |
+   | DB_PORT | (fourni par Railway MySQL) |
+   | DB_DATABASE | (fourni par Railway MySQL) |
+   | DB_USERNAME | (fourni par Railway MySQL) |
+   | DB_PASSWORD | (fourni par Railway MySQL) |
+   | FILESYSTEM_DISK | public |
+
+5. **Déployer**
+   - Railway détecte automatiquement `nixpacks.toml` et lance le build
+   - Les migrations tournent automatiquement au démarrage
+   - L'app est accessible sur l'URL Railway générée
+
+### Commandes utiles en production
+```bash
+# Vider les caches après un changement
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# Relancer les migrations
+php artisan migrate --force
+```
