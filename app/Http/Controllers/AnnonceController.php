@@ -24,6 +24,11 @@ class AnnonceController extends Controller
             $query->where('prix_par_nuit', '<=', $request->prix_max);
         }
 
+        if ($request->filled('nb_personne')) {
+            // On considère que le nombre de chambres est un indicateur de capacité (ex: 2 personnes par chambre)
+            $query->where('nombre_de_chambres', '>=', ceil($request->nb_personne / 2));
+        }
+
         $annonces = $query->get();
         return view('annonces.index', compact('annonces'));
     }

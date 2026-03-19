@@ -8,7 +8,10 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-        <h2 class="text-2xl font-bold mb-2 text-center text-rose-500">Mini-Rb</h2>
+        <a href="{{ route('home') }}" class="flex justify-center items-center space-x-2 text-rose-500 mb-6 hover:text-rose-600 transition">
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 fill-current"><path d="M16 1c2.008 0 3.463.963 4.751 3.269l.533 1.025c1.954 3.83 6.114 12.54 7.1 14.836l.145.353c.667 1.591.91 2.472.96 3.396l.01.415v.301c0 4.262-2.87 7.405-6.66 7.405-2.008 0-3.463-.963-4.751-3.269l-.533-1.025c-1.954-3.83-6.114-12.54-7.1-14.836l-.145-.353c-.667-1.591-.91-2.472-.96-3.396l-.01-.415v-.301c0-4.262 2.87-7.405 6.66-7.405z"></path></svg>
+            <span class="font-bold text-2xl tracking-tighter">Mini-Rb</span>
+        </a>
         <h3 class="text-xl mb-6 text-center font-semibold">Se connecter</h3>
 
         <form action="{{ route('login') }}" method="POST">

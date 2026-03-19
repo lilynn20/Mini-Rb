@@ -5,19 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $annonce->titre }} - Mini-Rb</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-white">
-    <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b">
-        <a href="{{ route('home') }}" class="text-rose-500 font-bold text-2xl">Mini-Rb</a>
+    <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b sticky top-0 z-50">
+        <div class="flex items-center space-x-8">
+            <a href="{{ route('home') }}" class="flex items-center space-x-2 text-rose-500 hover:text-rose-600 transition">
+                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 fill-current"><path d="M16 1c2.008 0 3.463.963 4.751 3.269l.533 1.025c1.954 3.83 6.114 12.54 7.1 14.836l.145.353c.667 1.591.91 2.472.96 3.396l.01.415v.301c0 4.262-2.87 7.405-6.66 7.405-2.008 0-3.463-.963-4.751-3.269l-.533-1.025c-1.954-3.83-6.114-12.54-7.1-14.836l-.145-.353c-.667-1.591-.91-2.472-.96-3.396l-.01-.415v-.301c0-4.262 2.87-7.405 6.66-7.405z"></path></svg>
+                <span class="font-bold text-2xl tracking-tighter">Mini-Rb</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6 text-sm font-semibold text-gray-600">
+                <div class="group relative py-4">
+                    <button class="hover:text-rose-500 transition flex items-center">
+                        Pays populaires
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-full left-0 w-48 bg-white shadow-xl rounded-xl py-2 border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                        <a href="/?ville=France" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">France</a>
+                        <a href="/?ville=Maroc" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Maroc</a>
+                        <a href="/?ville=Espagne" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Espagne</a>
+                        <a href="/?ville=Italie" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Italie</a>
+                        <a href="/?ville=USA" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">États-Unis</a>
+                    </div>
+                </div>
+                <div class="group relative py-4">
+                    <button class="hover:text-rose-500 transition flex items-center">
+                        Villes populaires
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-full left-0 w-48 bg-white shadow-xl rounded-xl py-2 border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                        <a href="/?ville=Paris" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Paris</a>
+                        <a href="/?ville=Casablanca" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Casablanca</a>
+                        <a href="/?ville=Marrakech" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Marrakech</a>
+                        <a href="/?ville=Londres" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Londres</a>
+                        <a href="/?ville=Barcelone" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Barcelone</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="flex items-center space-x-4">
             @auth
+                @if(Auth::user()->isAdmin())
+                    <a href="{{ route('admin.index') }}" class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold hover:bg-purple-200 transition">Dashboard Admin</a>
+                @endif
                 <a href="{{ route('reservations.index') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Mes Réservations</a>
                 <a href="{{ route('annonces.create') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Publier</a>
                 <span class="text-gray-400">|</span>
                 <span class="text-gray-700 font-semibold">{{ Auth::user()->name }}</span>
                 <form action="{{ route('logout') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit" class="text-gray-500 hover:text-rose-500 transition font-semibold text-sm">Déconnexion</button>
+                    <button type="submit" class="text-gray-500 hover:text-rose-500 transition font-semibold text-sm focus:outline-none">Déconnexion</button>
                 </form>
             @else
                 <a href="{{ route('login') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Connexion</a>
@@ -159,7 +197,7 @@
 
             {{-- Reservation Card --}}
             <div class="md:col-span-1">
-                <div class="border rounded-2xl p-6 shadow-xl sticky top-10">
+                <div class="border rounded-2xl p-6 shadow-xl sticky top-20">
                     <p class="text-2xl font-bold mb-6">
                         <span class="text-gray-900">{{ $annonce->prix_par_nuit }}$</span>
                         <span class="text-gray-500 font-normal text-base"> par nuit</span>
