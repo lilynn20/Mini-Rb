@@ -10,6 +10,24 @@ import { ErrorAlert, SuccessAlert } from '../components/Alert';
 
 const toIsoDate = (d) => (d ? d.toISOString().slice(0, 10) : '');
 
+const CLEANING_FEE = 20;
+const SERVICE_FEE_RATE = 0.10;
+
+function computeBreakdown(start, end, pricePerNight) {
+    if (!start || !end) return null;
+    const nights = Math.round((end - start) / 86400000);
+    if (nights <= 0) return null;
+    const subtotal = nights * pricePerNight;
+    const service = Math.round(subtotal * SERVICE_FEE_RATE * 100) / 100;
+    return {
+        nights,
+        subtotal,
+        cleaning: CLEANING_FEE,
+        service,
+        total: subtotal + CLEANING_FEE + service,
+    };
+}
+
 export default function AnnonceShow() {
     const { id } = useParams();
     const { user } = useAuth();
@@ -96,6 +114,7 @@ export default function AnnonceShow() {
     const tomorrow = new Date(today.getTime() + 86400000);
     const excludedDates = (blocked_dates || []).map((d) => new Date(d));
     const maxGuests = annonce.nombre_de_chambres * 2;
+    const breakdown = computeBreakdown(startDate, endDate, Number(annonce.prix_par_nuit));
 
     return (
         <Layout>
@@ -276,6 +295,26 @@ export default function AnnonceShow() {
                                                 <p className="text-[10px] text-gray-400 mt-1">Max {maxGuests} ({annonce.nombre_de_chambres} chambre{annonce.nombre_de_chambres > 1 ? 's' : ''})</p>
                                             </div>
                                         </div>
+                                        {breakdown && (
+                                            <div className="text-sm text-gray-700 space-y-2 mb-4 pb-4 border-b">
+                                                <div className="flex justify-between">
+                                                    <span className="underline">{annonce.prix_par_nuit}$ × {breakdown.nights} nuit{breakdown.nights > 1 ? 's' : ''}</span>
+                                                    <span>{breakdown.subtotal}$</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="underline">Frais de ménage</span>
+                                                    <span>{breakdown.cleaning}$</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="underline">Frais de service</span>
+                                                    <span>{breakdown.service}$</span>
+                                                </div>
+                                                <div className="flex justify-between font-bold text-base pt-2">
+                                                    <span>Total</span>
+                                                    <span>{breakdown.total}$</span>
+                                                </div>
+                                            </div>
+                                        )}
                                         <button type="submit" className="w-full bg-rose-500 text-white py-3 rounded-lg font-bold hover:bg-rose-600 transition">
                                             Réserver
                                         </button>

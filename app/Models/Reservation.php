@@ -50,11 +50,31 @@ class Reservation extends Model
         return $blocked;
     }
 
+    const CLEANING_FEE = 20;
+    const SERVICE_FEE_RATE = 0.10;
+
     public static function calculateTotalPrice($startDate, $endDate, $pricePerNight)
+    {
+        $breakdown = self::priceBreakdown($startDate, $endDate, $pricePerNight);
+        return $breakdown['total'];
+    }
+
+    public static function priceBreakdown($startDate, $endDate, $pricePerNight): array
     {
         $start = \Carbon\Carbon::parse($startDate);
         $end = \Carbon\Carbon::parse($endDate);
         $nights = $start->diffInDays($end);
-        return $nights * $pricePerNight;
+        $subtotal = $nights * $pricePerNight;
+        $cleaning = self::CLEANING_FEE;
+        $service = round($subtotal * self::SERVICE_FEE_RATE, 2);
+
+        return [
+            'nights'        => $nights,
+            'price_per_night' => (float) $pricePerNight,
+            'subtotal'      => round($subtotal, 2),
+            'cleaning_fee'  => $cleaning,
+            'service_fee'   => $service,
+            'total'         => round($subtotal + $cleaning + $service, 2),
+        ];
     }
 }
