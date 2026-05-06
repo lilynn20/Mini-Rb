@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
-import { ErrorAlert, SuccessAlert } from '../components/Alert';
+import { ErrorAlert } from '../components/Alert';
 
 export default function Profile() {
     const { refreshUser } = useAuth();
@@ -14,7 +15,6 @@ export default function Profile() {
     });
     const [avatarFile, setAvatarFile] = useState(null);
     const [removeAvatar, setRemoveAvatar] = useState(false);
-    const [success, setSuccess] = useState(null);
     const [errors, setErrors] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const fileInputRef = useRef(null);
@@ -41,7 +41,6 @@ export default function Profile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors(null);
-        setSuccess(null);
         setSubmitting(true);
 
         const fd = new FormData();
@@ -52,12 +51,13 @@ export default function Profile() {
 
         try {
             const { data: res } = await api.post('/profile', fd);
-            setSuccess(res.message);
+            toast.success(res.message);
             await refreshUser();
             await load();
             if (fileInputRef.current) fileInputRef.current.value = '';
         } catch (err) {
             setErrors(err.response?.data?.errors);
+            toast.error('Veuillez corriger les erreurs ci-dessous.');
         } finally {
             setSubmitting(false);
         }
@@ -71,7 +71,6 @@ export default function Profile() {
     return (
         <Layout>
             <main className="max-w-3xl mx-auto px-8 py-10">
-                <SuccessAlert message={success} />
                 <ErrorAlert errors={errors} />
 
                 <h1 className="text-3xl font-bold mb-10">Mon Profil</h1>

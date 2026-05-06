@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import Logo from '../components/Logo';
 import Footer from '../components/Footer';
-import { SuccessAlert, ErrorAlert } from '../components/Alert';
 
 const STATUS_COLORS = {
     pending: 'bg-yellow-100 text-yellow-700',
@@ -30,8 +30,6 @@ const formatDate = (d) => new Date(d).toLocaleDateString('fr-FR');
 export default function Admin() {
     const { user, logout } = useAuth();
     const [data, setData] = useState(null);
-    const [success, setSuccess] = useState(null);
-    const [error, setError] = useState(null);
 
     const load = () => api.get('/admin').then((res) => setData(res.data));
 
@@ -41,10 +39,10 @@ export default function Admin() {
         if (!confirm('Supprimer cet utilisateur ?')) return;
         try {
             const { data: res } = await api.delete(`/admin/users/${id}`);
-            setSuccess(res.message);
+            toast.success(res.message);
             load();
         } catch (err) {
-            setError(err.response?.data?.message);
+            toast.error(err.response?.data?.message || 'Erreur.');
         }
     };
 
@@ -52,10 +50,10 @@ export default function Admin() {
         if (!confirm('Supprimer cette annonce ?')) return;
         try {
             const { data: res } = await api.delete(`/admin/annonces/${id}`);
-            setSuccess(res.message);
+            toast.success(res.message);
             load();
         } catch (err) {
-            setError(err.response?.data?.message);
+            toast.error(err.response?.data?.message || 'Erreur.');
         }
     };
 
@@ -77,9 +75,6 @@ export default function Admin() {
             </nav>
 
             <main className="max-w-7xl mx-auto px-8 py-10 flex-1 w-full">
-                <SuccessAlert message={success} />
-                <ErrorAlert errors={error} />
-
                 <div className="grid grid-cols-3 gap-6 mb-10">
                     <StatCard value={data.users.length} label="Utilisateurs" />
                     <StatCard value={data.annonces.length} label="Annonces" />

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api';
 import Layout from '../components/Layout';
 import Map from '../components/Map';
-import { SuccessAlert } from '../components/Alert';
 import FavoriteButton from '../components/FavoriteButton';
 
 export default function Home() {
@@ -19,7 +19,15 @@ export default function Home() {
         prix_max: searchParams.get('prix_max') || '',
         nb_personne: searchParams.get('nb_personne') || '',
     });
-    const verified = searchParams.get('verified') === '1';
+    useEffect(() => {
+        if (searchParams.get('verified') === '1') {
+            toast.success('Email vérifié avec succès ! Bienvenue sur Mini-Rb 🎉');
+            const params = new URLSearchParams(searchParams);
+            params.delete('verified');
+            setSearchParams(params, { replace: true });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const buildParams = (extraParams = {}) => {
         const params = { ...extraParams };
@@ -73,8 +81,6 @@ export default function Home() {
     return (
         <Layout>
             <main className="max-w-7xl mx-auto px-8 pb-10">
-                <SuccessAlert message={verified ? 'Email vérifié avec succès ! Bienvenue sur Mini-Rb 🎉' : null} />
-
                 <div className="relative mb-20">
                     <div className="relative rounded-3xl overflow-hidden h-[400px] flex items-center justify-center text-center">
                         <img

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api';
 import Logo from '../components/Logo';
 import { ErrorAlert } from '../components/Alert';
@@ -38,10 +39,13 @@ export default function AnnonceCreate() {
         images.forEach((file) => fd.append('images[]', file));
 
         try {
-            await api.post('/annonces', fd);
+            const { data: res } = await api.post('/annonces', fd);
+            toast.success(res.message);
             navigate('/');
         } catch (err) {
-            setErrors(err.response?.data?.errors || err.response?.data?.message);
+            const data = err.response?.data;
+            if (data?.errors) setErrors(data.errors);
+            else toast.error(data?.message || 'Erreur.');
         } finally {
             setSubmitting(false);
         }

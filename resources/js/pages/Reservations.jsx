@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api';
 import Layout from '../components/Layout';
-import { ErrorAlert, SuccessAlert } from '../components/Alert';
 
 const STATUS_COLORS = {
     pending: 'bg-yellow-100 text-yellow-700',
@@ -22,22 +22,18 @@ const formatDate = (d) => new Date(d).toLocaleDateString('fr-FR');
 
 export default function Reservations() {
     const [data, setData] = useState(null);
-    const [success, setSuccess] = useState(null);
-    const [error, setError] = useState(null);
 
     const load = () => api.get('/reservations').then((res) => setData(res.data));
 
     useEffect(() => { load(); }, []);
 
     const callAction = async (url, method = 'patch') => {
-        setError(null);
-        setSuccess(null);
         try {
             const { data: res } = await api({ url, method });
-            setSuccess(res.message);
+            toast.success(res.message);
             load();
         } catch (err) {
-            setError(err.response?.data?.message || 'Erreur.');
+            toast.error(err.response?.data?.message || 'Erreur.');
         }
     };
 
@@ -48,9 +44,6 @@ export default function Reservations() {
     return (
         <Layout>
             <main className="max-w-5xl mx-auto px-8 py-10">
-                <SuccessAlert message={success} />
-                <ErrorAlert errors={error} />
-
                 <h1 className="text-3xl font-bold mb-10">Mes Réservations</h1>
 
                 <div className="mb-14">

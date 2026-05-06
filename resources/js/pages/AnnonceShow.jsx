@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import toast from 'react-hot-toast';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import Gallery from '../components/Gallery';
 import Map from '../components/Map';
 import FavoriteButton from '../components/FavoriteButton';
-import { ErrorAlert, SuccessAlert } from '../components/Alert';
+import { ErrorAlert } from '../components/Alert';
 
 const toIsoDate = (d) => (d ? d.toISOString().slice(0, 10) : '');
 
@@ -35,7 +36,6 @@ export default function AnnonceShow() {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
-    const [success, setSuccess] = useState(null);
     const [errors, setErrors] = useState(null);
 
     const [startDate, setStartDate] = useState(null);
@@ -58,7 +58,6 @@ export default function AnnonceShow() {
     const handleReserve = async (e) => {
         e.preventDefault();
         setErrors(null);
-        setSuccess(null);
         if (!startDate || !endDate) {
             setErrors({ dates: ['Choisissez une date d\'arrivée et de départ.'] });
             return;
@@ -69,23 +68,26 @@ export default function AnnonceShow() {
                 end_date: toIsoDate(endDate),
                 nb_voyageurs: nbVoyageurs,
             });
-            setSuccess(res.message);
+            toast.success(res.message);
             setStartDate(null);
             setEndDate(null);
             setNbVoyageurs(1);
             load();
         } catch (err) {
-            setErrors(err.response?.data?.errors || err.response?.data?.message);
+            const data = err.response?.data;
+            if (data?.errors) setErrors(data.errors);
+            else toast.error(data?.message || 'Erreur lors de la réservation.');
         }
     };
 
     const handleDelete = async () => {
         if (!confirm('Supprimer cette annonce ?')) return;
         try {
-            await api.delete(`/annonces/${id}`);
+            const { data: res } = await api.delete(`/annonces/${id}`);
+            toast.success(res.message);
             navigate('/');
         } catch (err) {
-            setErrors(err.response?.data?.message || 'Erreur lors de la suppression.');
+            toast.error(err.response?.data?.message || 'Erreur lors de la suppression.');
         }
     };
 
@@ -95,7 +97,7 @@ export default function AnnonceShow() {
         setErrors(null);
         try {
             const { data: res } = await api.post(`/reservations/${data.eligible_reservation.id}/avis`, review);
-            setSuccess(res.message);
+            toast.success(res.message);
             setReview({
                 rating_cleanliness: 5,
                 rating_communication: 5,
@@ -105,7 +107,9 @@ export default function AnnonceShow() {
             });
             load();
         } catch (err) {
-            setErrors(err.response?.data?.errors || err.response?.data?.message);
+            const errData = err.response?.data;
+            if (errData?.errors) setErrors(errData.errors);
+            else toast.error(errData?.message || 'Erreur.');
         }
     };
 
@@ -113,10 +117,10 @@ export default function AnnonceShow() {
         if (!confirm('Supprimer cet avis ?')) return;
         try {
             const { data: res } = await api.delete(`/avis/${avisId}`);
-            setSuccess(res.message);
+            toast.success(res.message);
             load();
         } catch (err) {
-            setErrors(err.response?.data?.message);
+            toast.error(err.response?.data?.message || 'Erreur.');
         }
     };
 
@@ -133,7 +137,6 @@ export default function AnnonceShow() {
     return (
         <Layout>
             <main className="max-w-5xl mx-auto px-8 py-10">
-                <SuccessAlert message={success} />
                 <ErrorAlert errors={errors} />
 
                 <div className="flex justify-between items-start mb-4">

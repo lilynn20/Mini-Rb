@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api';
 import Logo from '../components/Logo';
 import { ErrorAlert } from '../components/Alert';
@@ -57,10 +58,13 @@ export default function AnnonceEdit() {
         deletedIds.forEach((delId) => fd.append('deleted_image_ids[]', delId));
 
         try {
-            await api.post(`/annonces/${id}`, fd);
+            const { data: res } = await api.post(`/annonces/${id}`, fd);
+            toast.success(res.message);
             navigate(`/annonces/${id}`);
         } catch (err) {
-            setErrors(err.response?.data?.errors || err.response?.data?.message);
+            const data = err.response?.data;
+            if (data?.errors) setErrors(data.errors);
+            else toast.error(data?.message || 'Erreur.');
         } finally {
             setSubmitting(false);
         }
