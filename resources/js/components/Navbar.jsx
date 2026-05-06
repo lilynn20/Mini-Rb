@@ -51,7 +51,14 @@ export default function Navbar() {
                             Mettre mon logement sur Mini-Rb
                         </Link>
                         <span className="text-gray-400">|</span>
-                        <Link to="/profile" className="text-gray-700 font-semibold hover:text-rose-500 transition">
+                        <Link to="/profile" className="flex items-center gap-2 text-gray-700 font-semibold hover:text-rose-500 transition">
+                            <span className="w-8 h-8 rounded-full overflow-hidden bg-rose-100 flex items-center justify-center text-rose-500 text-sm font-bold">
+                                {user.avatar_url ? (
+                                    <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
+                                ) : (
+                                    user.name.charAt(0).toUpperCase()
+                                )}
+                            </span>
                             {user.name}
                         </Link>
                         <button

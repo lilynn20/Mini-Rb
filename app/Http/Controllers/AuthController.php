@@ -84,6 +84,7 @@ class AuthController extends Controller
         $user = $request->user();
         $user->email_verified = $user->hasVerifiedEmail();
         $user->is_admin = $user->isAdmin();
+        $user->avatar_url = $user->avatar ? Storage::disk('s3')->url($user->avatar) : null;
 
         return response()->json($user);
     }
@@ -131,6 +132,9 @@ class AuthController extends Controller
                 'name'           => $user->name,
                 'email'          => $user->email,
                 'role'           => $user->role,
+                'phone'          => $user->phone,
+                'bio'            => $user->bio,
+                'avatar_url'     => $user->avatar ? Storage::disk('s3')->url($user->avatar) : null,
                 'email_verified' => $user->hasVerifiedEmail(),
                 'created_at'     => $user->created_at,
             ],
@@ -147,12 +151,18 @@ class AuthController extends Controller
         $user = $request->user();
 
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
+            'name'           => 'required|string|max:255',
+            'email'          => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'phone'          => 'nullable|string|max:30',
+            'bio'            => 'nullable|string|max:1000',
+            'password'       => 'nullable|string|min:8|confirmed',
+            'avatar'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_avatar'  => 'nullable|boolean',
         ]);
 
-        $user->name = $request->name;
+        $user->name  = $request->name;
+        $user->phone = $request->input('phone');
+        $user->bio   = $request->input('bio');
 
         if ($request->email !== $user->email) {
             $user->email = $request->email;
@@ -161,6 +171,18 @@ class AuthController extends Controller
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
+        }
+
+        if ($request->boolean('remove_avatar') && $user->avatar) {
+            Storage::disk('s3')->delete($user->avatar);
+            $user->avatar = null;
+        }
+
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::disk('s3')->delete($user->avatar);
+            }
+            $user->avatar = $request->file('avatar')->store('avatars', 's3');
         }
 
         $user->save();
