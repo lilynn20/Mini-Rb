@@ -5,6 +5,7 @@ import api from '../api';
 import Layout from '../components/Layout';
 import Map from '../components/Map';
 import FavoriteButton from '../components/FavoriteButton';
+import { CardGridSkeleton } from '../components/Skeleton';
 
 export default function Home() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -147,7 +148,7 @@ export default function Home() {
                 <h1 className="text-3xl font-bold mb-8">Découvrez votre prochain séjour</h1>
 
                 {loading ? (
-                    <p className="text-gray-400 text-center py-10">Chargement...</p>
+                    <CardGridSkeleton count={8} />
                 ) : (
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">

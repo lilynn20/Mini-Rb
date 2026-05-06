@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api';
 import Layout from '../components/Layout';
 import FavoriteButton from '../components/FavoriteButton';
+import { CardGridSkeleton } from '../components/Skeleton';
 
 export default function Favorites() {
     const [favorites, setFavorites] = useState([]);
@@ -24,7 +25,7 @@ export default function Favorites() {
                 <h1 className="text-3xl font-bold mb-10">Mes favoris</h1>
 
                 {loading ? (
-                    <p className="text-gray-400 text-center py-10">Chargement...</p>
+                    <CardGridSkeleton count={4} />
                 ) : favorites.length === 0 ? (
                     <div className="bg-white rounded-2xl border p-10 text-center text-gray-400">
                         Vous n'avez pas encore de favoris.

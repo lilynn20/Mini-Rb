@@ -10,6 +10,7 @@ import Gallery from '../components/Gallery';
 import Map from '../components/Map';
 import FavoriteButton from '../components/FavoriteButton';
 import { ErrorAlert } from '../components/Alert';
+import { ShowPageSkeleton } from '../components/Skeleton';
 
 const toIsoDate = (d) => (d ? d.toISOString().slice(0, 10) : '');
 
@@ -124,7 +125,7 @@ export default function AnnonceShow() {
         }
     };
 
-    if (!data) return <Layout><p className="p-10 text-gray-400">Chargement...</p></Layout>;
+    if (!data) return <Layout><ShowPageSkeleton /></Layout>;
 
     const { annonce, avis, avg_rating, criteria_averages, avis_count, eligible_reservation, can_update, blocked_dates } = data;
     const today = new Date();

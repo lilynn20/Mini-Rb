@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../api';
 import Layout from '../components/Layout';
+import { ListSkeleton } from '../components/Skeleton';
 
 const STATUS_COLORS = {
     pending: 'bg-yellow-100 text-yellow-700',
@@ -37,7 +38,7 @@ export default function Reservations() {
         }
     };
 
-    if (!data) return <Layout><p className="p-10 text-gray-400">Chargement...</p></Layout>;
+    if (!data) return <Layout><div className="max-w-5xl mx-auto px-8 py-10"><h1 className="text-3xl font-bold mb-10">Mes Réservations</h1><ListSkeleton /></div></Layout>;
 
     const { mes_reservations, reservations_recues } = data;
 
