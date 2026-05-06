@@ -6,6 +6,7 @@ import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import Gallery from '../components/Gallery';
+import Map from '../components/Map';
 import FavoriteButton from '../components/FavoriteButton';
 import { ErrorAlert, SuccessAlert } from '../components/Alert';
 
@@ -152,6 +153,14 @@ export default function AnnonceShow() {
 
                         <h3 className="text-xl font-bold mb-4">À propos de ce logement</h3>
                         <p className="text-gray-700 leading-relaxed mb-10 whitespace-pre-line">{annonce.description}</p>
+
+                        {annonce.latitude && annonce.longitude && (
+                            <div className="mb-10">
+                                <h3 className="text-xl font-bold mb-4">Localisation</h3>
+                                <Map annonces={[annonce]} height="h-[350px]" />
+                                <p className="text-gray-500 text-sm mt-2">{annonce.adresse}, {annonce.ville}</p>
+                            </div>
+                        )}
 
                         <div className="border-t pt-8">
                             <h3 className="text-xl font-bold mb-6">

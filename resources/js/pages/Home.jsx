@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../api';
 import Layout from '../components/Layout';
+import Map from '../components/Map';
 import { SuccessAlert } from '../components/Alert';
 import FavoriteButton from '../components/FavoriteButton';
 
@@ -164,6 +165,13 @@ export default function Home() {
                             </div>
                         )}
                     </>
+                )}
+
+                {!loading && annonces.length > 0 && (
+                    <div className="mt-16">
+                        <h2 className="text-2xl font-bold mb-6">Carte des logements</h2>
+                        <Map annonces={annonces} />
+                    </div>
                 )}
 
                 <div className="mt-20 border-t pt-16">

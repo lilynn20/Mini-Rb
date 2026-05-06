@@ -16,6 +16,8 @@ class Annonce extends Model
         'description',
         'adresse',
         'ville',
+        'latitude',
+        'longitude',
         'prix_par_nuit',
         'image',
         'nombre_de_chambres'

@@ -6,6 +6,7 @@ use App\Models\Annonce;
 use App\Models\AnnonceImage;
 use App\Models\Favorite;
 use App\Models\Reservation;
+use App\Services\GeocodingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -110,12 +111,16 @@ class AnnonceController extends Controller
             'images.*'           => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $coords = GeocodingService::geocode($request->adresse . ', ' . $request->ville);
+
         $annonce = Annonce::create([
             'user_id'            => Auth::id(),
             'titre'              => $request->titre,
             'description'        => $request->description,
             'adresse'            => $request->adresse,
             'ville'              => $request->ville,
+            'latitude'           => $coords['latitude']  ?? null,
+            'longitude'          => $coords['longitude'] ?? null,
             'prix_par_nuit'      => $request->prix_par_nuit,
             'nombre_de_chambres' => $request->nombre_de_chambres,
         ]);
@@ -145,9 +150,18 @@ class AnnonceController extends Controller
             'deleted_image_ids.*' => 'integer',
         ]);
 
-        $annonce->update($request->only([
+        $data = $request->only([
             'titre', 'description', 'adresse', 'ville', 'prix_par_nuit', 'nombre_de_chambres',
-        ]));
+        ]);
+
+        $addressChanged = $request->adresse !== $annonce->adresse || $request->ville !== $annonce->ville;
+        if ($addressChanged) {
+            $coords = GeocodingService::geocode($request->adresse . ', ' . $request->ville);
+            $data['latitude']  = $coords['latitude']  ?? null;
+            $data['longitude'] = $coords['longitude'] ?? null;
+        }
+
+        $annonce->update($data);
 
         if ($request->filled('deleted_image_ids')) {
             $toDelete = $annonce->images()->whereIn('id', $request->deleted_image_ids)->get();
@@ -206,6 +220,8 @@ class AnnonceController extends Controller
             'description'        => $a->description,
             'adresse'            => $a->adresse,
             'ville'              => $a->ville,
+            'latitude'           => $a->latitude !== null ? (float) $a->latitude : null,
+            'longitude'          => $a->longitude !== null ? (float) $a->longitude : null,
             'prix_par_nuit'      => $a->prix_par_nuit,
             'nombre_de_chambres' => $a->nombre_de_chambres,
             'images'             => $imageUrls,
