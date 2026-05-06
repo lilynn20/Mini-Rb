@@ -150,7 +150,7 @@ export default function AnnonceShow() {
                     <div className="md:col-span-2">
                         <div className="flex justify-between items-start mb-2">
                             <h2 className="text-2xl font-bold">Logement proposé par {annonce.host_name}</h2>
-                            {can_update && (
+                            {can_update ? (
                                 <div className="flex space-x-2">
                                     <Link to={`/annonces/${annonce.id}/edit`} className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
                                         Modifier
@@ -159,6 +159,13 @@ export default function AnnonceShow() {
                                         Supprimer
                                     </button>
                                 </div>
+                            ) : user && (
+                                <Link
+                                    to={`/messages?to=${annonce.user_id}`}
+                                    className="bg-rose-50 text-rose-600 px-4 py-2 rounded-lg font-semibold hover:bg-rose-100 transition text-sm"
+                                >
+                                    Contacter l'hôte
+                                </Link>
                             )}
                         </div>
                         <p className="text-gray-600 mb-6 border-b pb-6">{annonce.nombre_de_chambres} chambre(s)</p>

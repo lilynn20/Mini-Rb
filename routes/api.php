@@ -7,6 +7,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AvisController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\MessageController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -25,6 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index']);
     Route::post('/favorites/{annonce}', [FavoriteController::class, 'store']);
     Route::delete('/favorites/{annonce}', [FavoriteController::class, 'destroy']);
+
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::get('/messages/unread-count', [MessageController::class, 'unreadCount']);
+    Route::get('/messages/{user}', [MessageController::class, 'conversation']);
+    Route::post('/messages/{user}', [MessageController::class, 'store']);
 
     Route::middleware('verified')->group(function () {
         Route::post('/annonces', [AnnonceController::class, 'store']);

@@ -44,6 +44,9 @@ export default function Navbar() {
                         <Link to="/favoris" className="text-gray-700 font-semibold hover:text-rose-500 transition">
                             Favoris
                         </Link>
+                        <Link to="/messages" className="text-gray-700 font-semibold hover:text-rose-500 transition">
+                            Messages
+                        </Link>
                         <Link to="/mes-reservations" className="text-gray-700 font-semibold hover:text-rose-500 transition">
                             Mes Réservations
                         </Link>
