@@ -8,6 +8,10 @@ export default function Home() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [annonces, setAnnonces] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [page, setPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
+    const [total, setTotal] = useState(0);
     const [filters, setFilters] = useState({
         ville: searchParams.get('ville') || '',
         prix_max: searchParams.get('prix_max') || '',
@@ -15,17 +19,38 @@ export default function Home() {
     });
     const verified = searchParams.get('verified') === '1';
 
-    useEffect(() => {
-        setLoading(true);
-        const params = {};
+    const buildParams = (extraParams = {}) => {
+        const params = { ...extraParams };
         if (searchParams.get('ville')) params.ville = searchParams.get('ville');
         if (searchParams.get('prix_max')) params.prix_max = searchParams.get('prix_max');
         if (searchParams.get('nb_personne')) params.nb_personne = searchParams.get('nb_personne');
+        return params;
+    };
 
-        api.get('/annonces', { params })
-            .then((res) => setAnnonces(res.data))
+    useEffect(() => {
+        setLoading(true);
+        setPage(1);
+        api.get('/annonces', { params: buildParams({ page: 1 }) })
+            .then((res) => {
+                setAnnonces(res.data.data);
+                setLastPage(res.data.last_page);
+                setTotal(res.data.total);
+            })
             .finally(() => setLoading(false));
     }, [searchParams]);
+
+    const loadMore = async () => {
+        const next = page + 1;
+        setLoadingMore(true);
+        try {
+            const { data } = await api.get('/annonces', { params: buildParams({ page: next }) });
+            setAnnonces((prev) => [...prev, ...data.data]);
+            setPage(next);
+            setLastPage(data.last_page);
+        } finally {
+            setLoadingMore(false);
+        }
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -116,13 +141,28 @@ export default function Home() {
                 {loading ? (
                     <p className="text-gray-400 text-center py-10">Chargement...</p>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                        {annonces.length === 0 ? (
-                            <p className="text-gray-500 col-span-full text-center py-10">Aucune annonce disponible pour le moment.</p>
-                        ) : (
-                            annonces.map((a) => <AnnonceCard key={a.id} annonce={a} />)
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                            {annonces.length === 0 ? (
+                                <p className="text-gray-500 col-span-full text-center py-10">Aucune annonce disponible pour le moment.</p>
+                            ) : (
+                                annonces.map((a) => <AnnonceCard key={a.id} annonce={a} />)
+                            )}
+                        </div>
+
+                        {annonces.length > 0 && page < lastPage && (
+                            <div className="text-center mt-12">
+                                <button
+                                    type="button"
+                                    onClick={loadMore}
+                                    disabled={loadingMore}
+                                    className="bg-rose-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-rose-600 transition disabled:opacity-50"
+                                >
+                                    {loadingMore ? 'Chargement...' : `Charger plus (${total - annonces.length} restantes)`}
+                                </button>
+                            </div>
                         )}
-                    </div>
+                    </>
                 )}
 
                 <div className="mt-20 border-t pt-16">

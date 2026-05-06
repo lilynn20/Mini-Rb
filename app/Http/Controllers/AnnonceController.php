@@ -29,7 +29,7 @@ class AnnonceController extends Controller
             $query->where('nombre_de_chambres', '>=', ceil($request->nb_personne / 2));
         }
 
-        $annonces = $query->get()->map(fn ($a) => $this->formatAnnonce($a));
+        $annonces = $query->paginate(12)->through(fn ($a) => $this->formatAnnonce($a));
 
         return response()->json($annonces);
     }
