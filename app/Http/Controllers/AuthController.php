@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\Reservation;
 use App\Mail\WelcomeMail;
 use App\Mail\VerifyEmailMail;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\UpdateProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,14 +18,8 @@ use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
@@ -50,14 +47,9 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email'    => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt($request->validated())) {
             return response()->json([
                 'errors' => ['email' => ['Les identifiants ne correspondent pas.']],
             ], 422);
@@ -146,19 +138,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function updateProfile(Request $request)
+    public function updateProfile(UpdateProfileRequest $request)
     {
         $user = $request->user();
-
-        $request->validate([
-            'name'           => 'required|string|max:255',
-            'email'          => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone'          => 'nullable|string|max:30',
-            'bio'            => 'nullable|string|max:1000',
-            'password'       => 'nullable|string|min:8|confirmed',
-            'avatar'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'remove_avatar'  => 'nullable|boolean',
-        ]);
 
         $user->name  = $request->name;
         $user->phone = $request->input('phone');

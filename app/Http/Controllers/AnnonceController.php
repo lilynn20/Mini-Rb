@@ -7,6 +7,8 @@ use App\Models\AnnonceImage;
 use App\Models\Favorite;
 use App\Models\Reservation;
 use App\Services\GeocodingService;
+use App\Http\Requests\StoreAnnonceRequest;
+use App\Http\Requests\UpdateAnnonceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -110,19 +112,8 @@ class AnnonceController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreAnnonceRequest $request)
     {
-        $request->validate([
-            'titre'              => 'required|string|max:255',
-            'description'        => 'required|string',
-            'adresse'            => 'required|string|max:255',
-            'ville'              => 'required|string|max:255',
-            'prix_par_nuit'      => 'required|numeric|min:0',
-            'nombre_de_chambres' => 'required|integer|min:1',
-            'images'             => 'nullable|array|max:10',
-            'images.*'           => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
         $coords = GeocodingService::geocode($request->adresse . ', ' . $request->ville);
 
         $annonce = Annonce::create([
@@ -145,22 +136,9 @@ class AnnonceController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Annonce $annonce)
+    public function update(UpdateAnnonceRequest $request, Annonce $annonce)
     {
         $this->authorize('update', $annonce);
-
-        $request->validate([
-            'titre'              => 'required|string|max:255',
-            'description'        => 'required|string',
-            'adresse'            => 'required|string|max:255',
-            'ville'              => 'required|string|max:255',
-            'prix_par_nuit'      => 'required|numeric|min:0',
-            'nombre_de_chambres' => 'required|integer|min:1',
-            'images'             => 'nullable|array|max:10',
-            'images.*'           => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'deleted_image_ids'  => 'nullable|array',
-            'deleted_image_ids.*' => 'integer',
-        ]);
 
         $data = $request->only([
             'titre', 'description', 'adresse', 'ville', 'prix_par_nuit', 'nombre_de_chambres',

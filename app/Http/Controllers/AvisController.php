@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Avis;
 use App\Models\Reservation;
+use App\Http\Requests\StoreAvisRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AvisController extends Controller
 {
-    public function store(Request $request, $reservationId)
+    public function store(StoreAvisRequest $request, $reservationId)
     {
         $reservation = Reservation::findOrFail($reservationId);
 
@@ -19,13 +20,7 @@ class AvisController extends Controller
             ], 403);
         }
 
-        $validated = $request->validate([
-            'rating_cleanliness'   => 'required|integer|min:1|max:5',
-            'rating_communication' => 'required|integer|min:1|max:5',
-            'rating_location'      => 'required|integer|min:1|max:5',
-            'rating_value'         => 'required|integer|min:1|max:5',
-            'comment'              => 'required|string',
-        ]);
+        $validated = $request->validated();
 
         $overall = round((
             $validated['rating_cleanliness'] +

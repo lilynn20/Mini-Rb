@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Models\Annonce;
 use App\Mail\ReservationCreated;
 use App\Mail\ReservationStatusChanged;
+use App\Http\Requests\StoreReservationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -35,14 +36,8 @@ class ReservationController extends Controller
         ]);
     }
 
-    public function store(Request $request, $annonceId)
+    public function store(StoreReservationRequest $request, $annonceId)
     {
-        $request->validate([
-            'start_date'   => 'required|date|after_or_equal:today',
-            'end_date'     => 'required|date|after:start_date',
-            'nb_voyageurs' => 'required|integer|min:1',
-        ]);
-
         $annonce = Annonce::findOrFail($annonceId);
 
         if (Auth::id() === $annonce->user_id) {
