@@ -50,7 +50,7 @@ class Reservation extends Model
         return $blocked;
     }
 
-    const CLEANING_FEE = 20;
+    const CLEANING_FEE = 200;
     const SERVICE_FEE_RATE = 0.10;
 
     public static function calculateTotalPrice($startDate, $endDate, $pricePerNight)

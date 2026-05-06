@@ -104,7 +104,7 @@ export default function Home() {
                         <div className="absolute inset-0 bg-black/40"></div>
                         <div className="relative z-10 px-4 pb-12">
                             <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-lg">
-                                Trouvez des locations de vacances dans le monde entier
+                                Trouvez des locations de vacances partout au Maroc
                             </h1>
                             <p className="text-xl md:text-2xl text-white font-medium drop-shadow-md">
                                 Réservez vos prochaines vacances dès maintenant !
@@ -222,15 +222,15 @@ export default function Home() {
                 <div className="mt-20 border-t pt-16">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div>
-                            <h2 className="text-2xl font-bold mb-4">Réservez votre logement en toute simplicité</h2>
+                            <h2 className="text-2xl font-bold mb-4">Réservez votre logement au Maroc en toute simplicité</h2>
                             <p className="text-gray-600 leading-relaxed">
-                                Envie de voyager sans stress ? Sur MiniRBnB, trouvez et réservez votre hébergement rapidement, en toute sécurité et sans mauvaise surprise. Découvrez un large choix d'appartements, maisons, villas et chambres adaptées à tous les budgets. Toutes les annonces sont vérifiées et les réservations sont simples et sécurisées.
+                                Envie de découvrir le Maroc sans stress ? Sur Mini-Rb, trouvez et réservez votre hébergement à Casablanca, Marrakech, Tanger, Agadir et partout dans le Royaume. Découvrez un large choix de riads, appartements, villas et maisons d'hôtes adaptés à tous les budgets.
                             </p>
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold mb-4">Trouvez le logement qui vous correspond</h2>
+                            <h2 className="text-2xl font-bold mb-4">Du Sahara à la Méditerranée</h2>
                             <p className="text-gray-600 leading-relaxed">
-                                Que vous cherchiez une escapade romantique, un séjour en famille ou un voyage entre amis, MiniRBnB vous aide à trouver l'hébergement idéal. Grâce à nos filtres pratiques, choisissez la ville, les dates, le nombre de voyageurs et les équipements dont vous avez besoin.
+                                Que vous cherchiez une escapade dans la médina de Fès, un séjour en famille à Agadir, ou une aventure dans les dunes de Merzouga, Mini-Rb vous aide à trouver l'hébergement idéal au cœur du Maroc.
                             </p>
                         </div>
                     </div>
@@ -273,7 +273,7 @@ function AnnonceCard({ annonce }) {
             <h3 className="font-bold text-gray-900">{annonce.ville}</h3>
             <p className="text-gray-500 text-sm truncate">{annonce.titre}</p>
             <p className="mt-1 font-semibold">
-                <span className="text-gray-900">{annonce.prix_par_nuit}$</span>{' '}
+                <span className="text-gray-900">{annonce.prix_par_nuit} MAD</span>{' '}
                 <span className="text-gray-500 font-normal">par nuit</span>
             </p>
 

@@ -115,7 +115,7 @@ export default function Admin() {
                                     <Link to={`/annonces/${a.id}`} className="hover:text-rose-500">{a.titre}</Link>
                                 </td>
                                 <td className="px-6 py-4 text-gray-500">{a.ville}</td>
-                                <td className="px-6 py-4">{a.prix_par_nuit}$</td>
+                                <td className="px-6 py-4">{a.prix_par_nuit} MAD</td>
                                 <td className="px-6 py-4 text-gray-500">{a.host_name}</td>
                                 <td className="px-6 py-4">
                                     <button onClick={() => handleDeleteAnnonce(a.id)} className="text-red-500 hover:text-red-700 font-semibold">
@@ -136,7 +136,7 @@ export default function Admin() {
                                 <td className="px-6 py-4 text-gray-500">
                                     {formatDate(r.start_date)} → {formatDate(r.end_date)}
                                 </td>
-                                <td className="px-6 py-4">{r.total_price}$</td>
+                                <td className="px-6 py-4">{r.total_price} MAD</td>
                                 <td className="px-6 py-4">
                                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[r.status] || ''}`}>
                                         {STATUS_LABELS[r.status] || r.status}

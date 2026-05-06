@@ -17,23 +17,24 @@ export default function Navbar() {
                     <Logo />
                     <div className="hidden md:flex items-center space-x-6 text-sm font-semibold text-gray-600">
                         <DropdownMenu
-                            label="Pays populaires"
+                            label="Villes populaires"
                             items={[
-                                { label: 'France', value: 'France' },
-                                { label: 'Maroc', value: 'Maroc' },
-                                { label: 'Espagne', value: 'Espagne' },
-                                { label: 'Italie', value: 'Italie' },
-                                { label: 'États-Unis', value: 'USA' },
+                                { label: 'Casablanca', value: 'Casablanca' },
+                                { label: 'Marrakech', value: 'Marrakech' },
+                                { label: 'Rabat', value: 'Rabat' },
+                                { label: 'Fès', value: 'Fès' },
+                                { label: 'Tanger', value: 'Tanger' },
+                                { label: 'Agadir', value: 'Agadir' },
                             ]}
                         />
                         <DropdownMenu
-                            label="Villes populaires"
+                            label="Régions touristiques"
                             items={[
-                                { label: 'Paris', value: 'Paris' },
-                                { label: 'Casablanca', value: 'Casablanca' },
-                                { label: 'Marrakech', value: 'Marrakech' },
-                                { label: 'Londres', value: 'Londres' },
-                                { label: 'Barcelone', value: 'Barcelone' },
+                                { label: 'Chefchaouen', value: 'Chefchaouen' },
+                                { label: 'Essaouira', value: 'Essaouira' },
+                                { label: 'Ouarzazate', value: 'Ouarzazate' },
+                                { label: 'Merzouga', value: 'Merzouga' },
+                                { label: 'Ifrane', value: 'Ifrane' },
                             ]}
                         />
                     </div>

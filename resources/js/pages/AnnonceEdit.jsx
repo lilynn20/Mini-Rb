@@ -102,7 +102,7 @@ export default function AnnonceEdit() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Prix par nuit ($)" name="prix_par_nuit" type="number" value={form.prix_par_nuit} onChange={handleChange} min="0" required />
+                            <Field label="Prix par nuit (MAD)" name="prix_par_nuit" type="number" value={form.prix_par_nuit} onChange={handleChange} min="0" required />
                             <Field label="Nombre de chambres" name="nombre_de_chambres" type="number" value={form.nombre_de_chambres} onChange={handleChange} min="1" required />
                         </div>
 

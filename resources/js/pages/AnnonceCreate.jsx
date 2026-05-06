@@ -64,7 +64,7 @@ export default function AnnonceCreate() {
 
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <div className="space-y-4">
-                        <Field label="Titre de l'annonce" name="titre" value={form.titre} onChange={handleChange} placeholder="Ex: Bel appartement au centre ville" required />
+                        <Field label="Titre de l'annonce" name="titre" value={form.titre} onChange={handleChange} placeholder="Ex: Riad au cœur de la médina" required />
 
                         <div>
                             <label className="block text-gray-700 font-semibold mb-1">Description</label>
@@ -76,12 +76,12 @@ export default function AnnonceCreate() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Ville" name="ville" value={form.ville} onChange={handleChange} placeholder="Ex: Paris" required />
-                            <Field label="Adresse" name="adresse" value={form.adresse} onChange={handleChange} placeholder="Ex: 12 rue de la Paix" required />
+                            <Field label="Ville" name="ville" value={form.ville} onChange={handleChange} placeholder="Ex: Casablanca" required />
+                            <Field label="Adresse" name="adresse" value={form.adresse} onChange={handleChange} placeholder="Ex: 12 Bd Mohammed V" required />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Prix par nuit ($)" name="prix_par_nuit" type="number" value={form.prix_par_nuit} onChange={handleChange} min="0" required />
+                            <Field label="Prix par nuit (MAD)" name="prix_par_nuit" type="number" value={form.prix_par_nuit} onChange={handleChange} min="0" required />
                             <Field label="Nombre de chambres" name="nombre_de_chambres" type="number" value={form.nombre_de_chambres} onChange={handleChange} min="1" required />
                         </div>
 

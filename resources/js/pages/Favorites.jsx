@@ -54,7 +54,7 @@ export default function Favorites() {
                                 <h3 className="font-bold text-gray-900">{a.ville}</h3>
                                 <p className="text-gray-500 text-sm truncate">{a.titre}</p>
                                 <p className="mt-1 font-semibold">
-                                    <span className="text-gray-900">{a.prix_par_nuit}$</span>{' '}
+                                    <span className="text-gray-900">{a.prix_par_nuit} MAD</span>{' '}
                                     <span className="text-gray-500 font-normal">par nuit</span>
                                 </p>
                             </Link>

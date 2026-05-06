@@ -13,9 +13,10 @@ class GeocodingService
             $response = Http::withHeaders([
                 'User-Agent' => 'Mini-Rb/1.0 (student project)',
             ])->timeout(5)->get('https://nominatim.openstreetmap.org/search', [
-                'q'      => $address,
-                'format' => 'json',
-                'limit'  => 1,
+                'q'            => $address,
+                'format'       => 'json',
+                'limit'        => 1,
+                'countrycodes' => 'ma',
             ]);
 
             if (!$response->successful()) {

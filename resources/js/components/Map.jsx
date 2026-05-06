@@ -34,7 +34,7 @@ export default function Map({ annonces, height = 'h-[400px]', center, zoom }) {
                             <div className="text-sm">
                                 <p className="font-bold">{a.titre}</p>
                                 <p className="text-gray-500">{a.ville}</p>
-                                <p className="font-semibold mt-1">{a.prix_par_nuit}$ / nuit</p>
+                                <p className="font-semibold mt-1">{a.prix_par_nuit} MAD / nuit</p>
                                 <a href={`/annonces/${a.id}`} className="text-rose-500 underline">
                                     Voir l'annonce
                                 </a>

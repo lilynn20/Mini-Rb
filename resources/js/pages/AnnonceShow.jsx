@@ -14,7 +14,7 @@ import { ShowPageSkeleton } from '../components/Skeleton';
 
 const toIsoDate = (d) => (d ? d.toISOString().slice(0, 10) : '');
 
-const CLEANING_FEE = 20;
+const CLEANING_FEE = 200;
 const SERVICE_FEE_RATE = 0.10;
 
 function computeBreakdown(start, end, pricePerNight) {
@@ -268,8 +268,8 @@ export default function AnnonceShow() {
                     <div className="md:col-span-1">
                         <div className="border rounded-2xl p-6 shadow-xl sticky top-20">
                             <p className="text-2xl font-bold mb-6">
-                                <span className="text-gray-900">{annonce.prix_par_nuit}$</span>
-                                <span className="text-gray-500 font-normal text-base"> par nuit</span>
+                                <span className="text-gray-900">{annonce.prix_par_nuit} MAD</span>
+                                <span className="text-gray-500 font-normal text-base"> / nuit</span>
                             </p>
 
                             {user ? (
@@ -334,20 +334,20 @@ export default function AnnonceShow() {
                                         {breakdown && (
                                             <div className="text-sm text-gray-700 space-y-2 mb-4 pb-4 border-b">
                                                 <div className="flex justify-between">
-                                                    <span className="underline">{annonce.prix_par_nuit}$ × {breakdown.nights} nuit{breakdown.nights > 1 ? 's' : ''}</span>
-                                                    <span>{breakdown.subtotal}$</span>
+                                                    <span className="underline">{annonce.prix_par_nuit} MAD × {breakdown.nights} nuit{breakdown.nights > 1 ? 's' : ''}</span>
+                                                    <span>{breakdown.subtotal} MAD</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="underline">Frais de ménage</span>
-                                                    <span>{breakdown.cleaning}$</span>
+                                                    <span>{breakdown.cleaning} MAD</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="underline">Frais de service</span>
-                                                    <span>{breakdown.service}$</span>
+                                                    <span>{breakdown.service} MAD</span>
                                                 </div>
                                                 <div className="flex justify-between font-bold text-base pt-2">
                                                     <span>Total</span>
-                                                    <span>{breakdown.total}$</span>
+                                                    <span>{breakdown.total} MAD</span>
                                                 </div>
                                             </div>
                                         )}

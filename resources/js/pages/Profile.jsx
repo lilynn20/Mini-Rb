@@ -154,7 +154,7 @@ export default function Profile() {
                                 <Field label="Email" name="email" type="email" value={form.email} onChange={handleChange} required />
                                 <p className="text-xs text-gray-400 mt-1">Si vous changez votre email, vous devrez le vérifier à nouveau.</p>
                             </div>
-                            <Field label="Téléphone" name="phone" value={form.phone} onChange={handleChange} placeholder="+212 6XX XXX XXX" />
+                            <Field label="Téléphone" name="phone" value={form.phone} onChange={handleChange} placeholder="+212 6 XX XX XX XX" />
                             <div>
                                 <label className="block text-gray-700 font-semibold mb-1">Bio</label>
                                 <textarea
@@ -200,7 +200,7 @@ export default function Profile() {
                                             <Link to={`/annonces/${a.id}`} className="font-semibold hover:text-rose-500">
                                                 {a.titre}
                                             </Link>
-                                            <p className="text-gray-500 text-sm">{a.ville} · {a.prix_par_nuit}$/nuit</p>
+                                            <p className="text-gray-500 text-sm">{a.ville} · {a.prix_par_nuit} MAD/nuit</p>
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
