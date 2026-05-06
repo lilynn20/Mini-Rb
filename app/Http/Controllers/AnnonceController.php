@@ -20,7 +20,7 @@ class AnnonceController extends Controller
 
     public function index(Request $request)
     {
-        $query = Annonce::with('images')->latest();
+        $query = Annonce::with('images');
 
         if ($request->filled('ville')) {
             $query->where('ville', 'like', '%' . $request->ville . '%');
@@ -32,6 +32,21 @@ class AnnonceController extends Controller
 
         if ($request->filled('nb_personne')) {
             $query->where('nombre_de_chambres', '>=', ceil($request->nb_personne / 2));
+        }
+
+        if ($request->filled('nb_chambres_min')) {
+            $query->where('nombre_de_chambres', '>=', (int) $request->nb_chambres_min);
+        }
+
+        switch ($request->input('sort')) {
+            case 'price_asc':
+                $query->orderBy('prix_par_nuit', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('prix_par_nuit', 'desc');
+                break;
+            default:
+                $query->latest();
         }
 
         $userId = Auth::id();

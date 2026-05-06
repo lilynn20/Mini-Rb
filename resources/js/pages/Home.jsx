@@ -19,6 +19,8 @@ export default function Home() {
         ville: searchParams.get('ville') || '',
         prix_max: searchParams.get('prix_max') || '',
         nb_personne: searchParams.get('nb_personne') || '',
+        nb_chambres_min: searchParams.get('nb_chambres_min') || '',
+        sort: searchParams.get('sort') || '',
     });
     useEffect(() => {
         if (searchParams.get('verified') === '1') {
@@ -32,9 +34,10 @@ export default function Home() {
 
     const buildParams = (extraParams = {}) => {
         const params = { ...extraParams };
-        if (searchParams.get('ville')) params.ville = searchParams.get('ville');
-        if (searchParams.get('prix_max')) params.prix_max = searchParams.get('prix_max');
-        if (searchParams.get('nb_personne')) params.nb_personne = searchParams.get('nb_personne');
+        ['ville', 'prix_max', 'nb_personne', 'nb_chambres_min', 'sort'].forEach((k) => {
+            const v = searchParams.get(k);
+            if (v) params[k] = v;
+        });
         return params;
     };
 
@@ -66,18 +69,27 @@ export default function Home() {
     const handleSearch = (e) => {
         e.preventDefault();
         const params = {};
-        if (filters.ville) params.ville = filters.ville;
-        if (filters.prix_max) params.prix_max = filters.prix_max;
-        if (filters.nb_personne) params.nb_personne = filters.nb_personne;
+        Object.entries(filters).forEach(([k, v]) => {
+            if (v) params[k] = v;
+        });
         setSearchParams(params);
     };
 
     const clearFilters = () => {
-        setFilters({ ville: '', prix_max: '', nb_personne: '' });
+        setFilters({ ville: '', prix_max: '', nb_personne: '', nb_chambres_min: '', sort: '' });
         setSearchParams({});
     };
 
-    const hasFilters = filters.ville || filters.prix_max || filters.nb_personne;
+    const hasFilters = Object.values(filters).some((v) => v);
+
+    const applyFilters = (next) => {
+        setFilters(next);
+        const params = {};
+        Object.entries(next).forEach(([k, v]) => {
+            if (v) params[k] = v;
+        });
+        setSearchParams(params);
+    };
 
     return (
         <Layout>
@@ -145,7 +157,33 @@ export default function Home() {
                     </div>
                 </div>
 
-                <h1 className="text-3xl font-bold mb-8">Découvrez votre prochain séjour</h1>
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+                    <h1 className="text-3xl font-bold">Découvrez votre prochain séjour</h1>
+                    <div className="flex items-center gap-3">
+                        <label className="text-sm text-gray-600 font-semibold">Filtrer:</label>
+                        <select
+                            value={filters.nb_chambres_min}
+                            onChange={(e) => applyFilters({ ...filters, nb_chambres_min: e.target.value })}
+                            className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+                        >
+                            <option value="">Toutes chambres</option>
+                            <option value="1">1+ chambre</option>
+                            <option value="2">2+ chambres</option>
+                            <option value="3">3+ chambres</option>
+                            <option value="4">4+ chambres</option>
+                        </select>
+                        <label className="text-sm text-gray-600 font-semibold ml-2">Trier:</label>
+                        <select
+                            value={filters.sort}
+                            onChange={(e) => applyFilters({ ...filters, sort: e.target.value })}
+                            className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+                        >
+                            <option value="">Plus récent</option>
+                            <option value="price_asc">Prix croissant</option>
+                            <option value="price_desc">Prix décroissant</option>
+                        </select>
+                    </div>
+                </div>
 
                 {loading ? (
                     <CardGridSkeleton count={8} />
