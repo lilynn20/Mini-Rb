@@ -8,6 +8,7 @@ use App\Http\Controllers\AvisController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PaymentController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -42,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/reservations/{id}/accept', [ReservationController::class, 'accept']);
         Route::patch('/reservations/{id}/refuse', [ReservationController::class, 'refuse']);
         Route::patch('/reservations/{id}/cancel', [ReservationController::class, 'cancel']);
+        Route::post('/reservations/{id}/checkout', [PaymentController::class, 'checkout']);
+        Route::get('/reservations/{id}/payment-success', [PaymentController::class, 'paymentSuccess']);
 
         Route::post('/reservations/{id}/avis', [AvisController::class, 'store']);
         Route::delete('/avis/{id}', [AvisController::class, 'destroy']);

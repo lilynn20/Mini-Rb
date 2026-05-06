@@ -155,6 +155,7 @@ class ReservationController extends Controller
             'nb_voyageurs' => $r->nb_voyageurs,
             'total_price'  => $r->total_price,
             'status'       => $r->status,
+            'paid_at'      => $r->paid_at,
             'has_my_review' => $hasMyReview,
             'annonce'     => [
                 'id'        => $r->annonce->id,

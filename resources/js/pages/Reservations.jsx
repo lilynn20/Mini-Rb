@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../api';
 import Layout from '../components/Layout';
@@ -23,10 +23,44 @@ const formatDate = (d) => new Date(d).toLocaleDateString('fr-FR');
 
 export default function Reservations() {
     const [data, setData] = useState(null);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const load = () => api.get('/reservations').then((res) => setData(res.data));
 
     useEffect(() => { load(); }, []);
+
+    useEffect(() => {
+        const paid = searchParams.get('paid');
+        const cancelled = searchParams.get('cancelled');
+        const reservationId = searchParams.get('reservation_id');
+        const sessionId = searchParams.get('session_id');
+
+        const cleanupParams = () => {
+            const next = new URLSearchParams(searchParams);
+            ['paid', 'cancelled', 'reservation_id', 'session_id'].forEach((k) => next.delete(k));
+            setSearchParams(next, { replace: true });
+        };
+
+        if (cancelled) {
+            toast.error('Paiement annulé.');
+            cleanupParams();
+        } else if (paid && reservationId && sessionId) {
+            api.get(`/reservations/${reservationId}/payment-success`, { params: { session_id: sessionId } })
+                .then((res) => {
+                    if (res.data.paid) {
+                        toast.success(res.data.message || 'Paiement confirmé !');
+                        load();
+                    } else {
+                        toast.error(res.data.message || 'Paiement non confirmé.');
+                    }
+                })
+                .catch((err) => {
+                    toast.error(err.response?.data?.message || 'Erreur lors de la vérification du paiement.');
+                })
+                .finally(cleanupParams);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const callAction = async (url, method = 'patch') => {
         try {
@@ -35,6 +69,15 @@ export default function Reservations() {
             load();
         } catch (err) {
             toast.error(err.response?.data?.message || 'Erreur.');
+        }
+    };
+
+    const handlePay = async (reservationId) => {
+        try {
+            const { data: res } = await api.post(`/reservations/${reservationId}/checkout`);
+            window.location.href = res.checkout_url;
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Erreur lors du paiement.');
         }
     };
 
@@ -67,7 +110,20 @@ export default function Reservations() {
                                 reservation={r}
                                 actions={
                                     <>
-                                        {['pending', 'accepted'].includes(r.status) && (
+                                        {r.status === 'accepted' && !r.paid_at && (
+                                            <button
+                                                onClick={() => handlePay(r.id)}
+                                                className="bg-rose-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-rose-600 transition"
+                                            >
+                                                Payer {r.total_price} MAD
+                                            </button>
+                                        )}
+                                        {r.paid_at && (
+                                            <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                                                ✓ Payé
+                                            </span>
+                                        )}
+                                        {['pending', 'accepted'].includes(r.status) && !r.paid_at && (
                                             <button
                                                 onClick={() => {
                                                     if (confirm('Annuler cette réservation ?')) {

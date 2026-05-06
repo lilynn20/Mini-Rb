@@ -17,6 +17,12 @@ class Reservation extends Model
         'nb_voyageurs',
         'total_price',
         'status',
+        'paid_at',
+        'stripe_session_id',
+    ];
+
+    protected $casts = [
+        'paid_at' => 'datetime',
     ];
 
     public function annonce()
