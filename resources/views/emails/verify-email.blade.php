@@ -2,45 +2,46 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vérification email - Mini-Rb</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <meta http-equiv="refresh" content="5">
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md text-center">
-        <div class="text-rose-500 font-bold text-2xl mb-6">Mini-Rb</div>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f3f4f6; padding: 40px 20px; margin: 0;">
+    <table role="presentation" style="max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <tr>
+            <td style="padding: 40px 40px 32px; text-align: center;">
+                <div style="font-size: 28px; font-weight: bold; color: #f43f5e; letter-spacing: -0.5px;">Mini-Rb</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0 40px 32px;">
+                <h2 style="margin: 0 0 16px; font-size: 22px; color: #111827;">Bonjour {{ $userName }},</h2>
+                <p style="margin: 0 0 16px; color: #4b5563; font-size: 16px; line-height: 1.5;">
+                    Merci de vous être inscrit sur Mini-Rb. Pour activer votre compte et commencer à explorer des logements au Maroc, veuillez cliquer sur le bouton ci-dessous :
+                </p>
 
-        <div class="text-5xl mb-4">📧</div>
-        <h2 class="text-2xl font-bold mb-2">Vérifiez votre email</h2>
-        <p class="text-gray-500 mb-2">
-            Nous avons envoyé un lien de vérification à votre adresse email.
-            Cliquez sur le lien pour activer votre compte.
-        </p>
-        <p class="text-gray-400 text-sm mb-6">Cette page se rafraîchit automatiquement toutes les 5 secondes.</p>
+                <p style="text-align: center; margin: 32px 0;">
+                    <a href="{{ $verificationUrl }}"
+                       style="display: inline-block; background: #f43f5e; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: bold; font-size: 16px;">
+                        Vérifier mon email
+                    </a>
+                </p>
 
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
+                <p style="margin: 0 0 8px; color: #6b7280; font-size: 13px; line-height: 1.5;">
+                    Ce lien expire dans 60 minutes. Si le bouton ne fonctionne pas, copiez-collez l'URL suivante dans votre navigateur :
+                </p>
+                <p style="margin: 0 0 24px; color: #9ca3af; font-size: 12px; word-break: break-all;">
+                    {{ $verificationUrl }}
+                </p>
 
-        <form action="{{ route('verification.send') }}" method="POST">
-            @csrf
-            <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg font-semibold hover:bg-rose-600 transition">
-                Renvoyer le lien de vérification
-            </button>
-        </form>
-
-        <form action="{{ route('logout') }}" method="POST" class="mt-4">
-            @csrf
-            <button type="submit" class="text-gray-400 hover:text-gray-600 text-sm">
-                Se déconnecter
-            </button>
-        </form>
-        <a href="{{ route('home') }}" class="block mt-3 text-rose-500 hover:text-rose-700 font-semibold text-sm">
-    Retourner à l'accueil →
-</a>
-    </div>
+                <p style="margin: 0; color: #9ca3af; font-size: 13px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+                    Si vous n'avez pas créé de compte sur Mini-Rb, vous pouvez ignorer ce message en toute sécurité.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 24px 40px; background: #f9fafb; text-align: center; color: #9ca3af; font-size: 12px;">
+                &copy; 2026 Mini-Rb · Mini-Rb, by Imane &amp; Naima.
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
