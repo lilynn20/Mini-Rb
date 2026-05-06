@@ -38,8 +38,9 @@ class ReservationController extends Controller
     public function store(Request $request, $annonceId)
     {
         $request->validate([
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date'   => 'required|date|after:start_date',
+            'start_date'   => 'required|date|after_or_equal:today',
+            'end_date'     => 'required|date|after:start_date',
+            'nb_voyageurs' => 'required|integer|min:1',
         ]);
 
         $annonce = Annonce::findOrFail($annonceId);
@@ -47,6 +48,15 @@ class ReservationController extends Controller
         if (Auth::id() === $annonce->user_id) {
             return response()->json([
                 'errors' => ['dates' => ['Vous ne pouvez pas réserver votre propre logement.']],
+            ], 422);
+        }
+
+        $maxCapacity = $annonce->nombre_de_chambres * 2;
+        if ($request->nb_voyageurs > $maxCapacity) {
+            return response()->json([
+                'errors' => ['nb_voyageurs' => [
+                    "Ce logement accepte au maximum {$maxCapacity} voyageurs (" . $annonce->nombre_de_chambres . ' chambre(s)).',
+                ]],
             ], 422);
         }
 
@@ -71,12 +81,13 @@ class ReservationController extends Controller
         $total = Reservation::calculateTotalPrice($request->start_date, $request->end_date, $annonce->prix_par_nuit);
 
         $reservation = Reservation::create([
-            'annonce_id'  => $annonce->id,
-            'user_id'     => Auth::id(),
-            'start_date'  => $request->start_date,
-            'end_date'    => $request->end_date,
-            'total_price' => $total,
-            'status'      => 'pending',
+            'annonce_id'   => $annonce->id,
+            'user_id'      => Auth::id(),
+            'start_date'   => $request->start_date,
+            'end_date'     => $request->end_date,
+            'nb_voyageurs' => $request->nb_voyageurs,
+            'total_price'  => $total,
+            'status'       => 'pending',
         ]);
 
         Mail::to($annonce->user->email)->send(new ReservationCreated($reservation->load(['annonce', 'user'])));
@@ -143,11 +154,12 @@ class ReservationController extends Controller
         $firstImage = $r->annonce->images->first();
 
         $data = [
-            'id'          => $r->id,
-            'start_date'  => $r->start_date,
-            'end_date'    => $r->end_date,
-            'total_price' => $r->total_price,
-            'status'      => $r->status,
+            'id'           => $r->id,
+            'start_date'   => $r->start_date,
+            'end_date'     => $r->end_date,
+            'nb_voyageurs' => $r->nb_voyageurs,
+            'total_price'  => $r->total_price,
+            'status'       => $r->status,
             'has_my_review' => $hasMyReview,
             'annonce'     => [
                 'id'        => $r->annonce->id,

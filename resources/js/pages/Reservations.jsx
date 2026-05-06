@@ -174,7 +174,7 @@ function ReservationCard({ reservation: r, actions, showTraveler }) {
                     Du <strong>{formatDate(r.start_date)}</strong> au <strong>{formatDate(r.end_date)}</strong>
                 </p>
                 <p className="text-gray-600 text-sm">
-                    Total : <strong>{r.total_price}$</strong>
+                    {r.nb_voyageurs} {r.nb_voyageurs === 1 ? 'voyageur' : 'voyageurs'} · Total : <strong>{r.total_price}$</strong>
                 </p>
             </div>
 

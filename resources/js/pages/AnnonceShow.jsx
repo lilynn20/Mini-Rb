@@ -20,6 +20,7 @@ export default function AnnonceShow() {
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [nbVoyageurs, setNbVoyageurs] = useState(1);
     const [review, setReview] = useState({ rating: 5, comment: '' });
 
     const load = () => {
@@ -40,10 +41,12 @@ export default function AnnonceShow() {
             const { data: res } = await api.post(`/annonces/${id}/reserver`, {
                 start_date: toIsoDate(startDate),
                 end_date: toIsoDate(endDate),
+                nb_voyageurs: nbVoyageurs,
             });
             setSuccess(res.message);
             setStartDate(null);
             setEndDate(null);
+            setNbVoyageurs(1);
             load();
         } catch (err) {
             setErrors(err.response?.data?.errors || err.response?.data?.message);
@@ -92,6 +95,7 @@ export default function AnnonceShow() {
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today.getTime() + 86400000);
     const excludedDates = (blocked_dates || []).map((d) => new Date(d));
+    const maxGuests = annonce.nombre_de_chambres * 2;
 
     return (
         <Layout>
@@ -255,6 +259,21 @@ export default function AnnonceShow() {
                                                         className="w-full text-sm outline-none bg-transparent"
                                                     />
                                                 </div>
+                                            </div>
+                                            <div className="p-3">
+                                                <label className="block text-[10px] font-bold uppercase mb-1">Voyageurs</label>
+                                                <select
+                                                    value={nbVoyageurs}
+                                                    onChange={(e) => setNbVoyageurs(Number(e.target.value))}
+                                                    className="w-full text-sm outline-none bg-transparent"
+                                                >
+                                                    {Array.from({ length: maxGuests }, (_, i) => i + 1).map((n) => (
+                                                        <option key={n} value={n}>
+                                                            {n} {n === 1 ? 'voyageur' : 'voyageurs'}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <p className="text-[10px] text-gray-400 mt-1">Max {maxGuests} ({annonce.nombre_de_chambres} chambre{annonce.nombre_de_chambres > 1 ? 's' : ''})</p>
                                             </div>
                                         </div>
                                         <button type="submit" className="w-full bg-rose-500 text-white py-3 rounded-lg font-bold hover:bg-rose-600 transition">

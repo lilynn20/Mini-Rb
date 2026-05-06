@@ -14,6 +14,7 @@ class Reservation extends Model
         'user_id',
         'start_date',
         'end_date',
+        'nb_voyageurs',
         'total_price',
         'status',
     ];
