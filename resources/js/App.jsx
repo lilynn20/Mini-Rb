@@ -9,6 +9,7 @@ import AnnonceShow from './pages/AnnonceShow';
 import AnnonceCreate from './pages/AnnonceCreate';
 import AnnonceEdit from './pages/AnnonceEdit';
 import Reservations from './pages/Reservations';
+import Favorites from './pages/Favorites';
 import Admin from './pages/Admin';
 
 function Protected({ children, requireVerified = true, requireAdmin = false }) {
@@ -44,6 +45,7 @@ export default function App() {
             <Route path="/annonces/create" element={<Protected><AnnonceCreate /></Protected>} />
             <Route path="/annonces/:id/edit" element={<Protected><AnnonceEdit /></Protected>} />
             <Route path="/mes-reservations" element={<Protected><Reservations /></Protected>} />
+            <Route path="/favoris" element={<Protected><Favorites /></Protected>} />
             <Route path="/admin" element={<Protected requireAdmin><Admin /></Protected>} />
 
             <Route path="*" element={<Navigate to="/" replace />} />

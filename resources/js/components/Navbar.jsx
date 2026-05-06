@@ -41,6 +41,9 @@ export default function Navbar() {
                                 Dashboard Admin
                             </Link>
                         )}
+                        <Link to="/favoris" className="text-gray-700 font-semibold hover:text-rose-500 transition">
+                            Favoris
+                        </Link>
                         <Link to="/mes-reservations" className="text-gray-700 font-semibold hover:text-rose-500 transition">
                             Mes Réservations
                         </Link>

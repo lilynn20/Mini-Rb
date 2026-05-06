@@ -6,6 +6,7 @@ import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import Gallery from '../components/Gallery';
+import FavoriteButton from '../components/FavoriteButton';
 import { ErrorAlert, SuccessAlert } from '../components/Alert';
 
 const toIsoDate = (d) => (d ? d.toISOString().slice(0, 10) : '');
@@ -122,7 +123,10 @@ export default function AnnonceShow() {
                 <SuccessAlert message={success} />
                 <ErrorAlert errors={errors} />
 
-                <h1 className="text-3xl font-bold mb-4">{annonce.titre}</h1>
+                <div className="flex justify-between items-start mb-4">
+                    <h1 className="text-3xl font-bold">{annonce.titre}</h1>
+                    <FavoriteButton annonceId={annonce.id} initial={annonce.is_favorited} size={28} />
+                </div>
                 <p className="text-gray-600 mb-6 underline font-semibold">
                     {annonce.adresse}, {annonce.ville}
                 </p>

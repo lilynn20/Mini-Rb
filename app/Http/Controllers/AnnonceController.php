@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Annonce;
 use App\Models\AnnonceImage;
+use App\Models\Favorite;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +31,16 @@ class AnnonceController extends Controller
             $query->where('nombre_de_chambres', '>=', ceil($request->nb_personne / 2));
         }
 
-        $annonces = $query->paginate(12)->through(fn ($a) => $this->formatAnnonce($a));
+        $userId = Auth::id();
+        $favoritedIds = $userId
+            ? Favorite::where('user_id', $userId)->pluck('annonce_id')->all()
+            : [];
+
+        $annonces = $query->paginate(12)->through(function ($a) use ($favoritedIds) {
+            $data = $this->formatAnnonce($a);
+            $data['is_favorited'] = in_array($a->id, $favoritedIds);
+            return $data;
+        });
 
         return response()->json($annonces);
     }
@@ -65,6 +75,10 @@ class AnnonceController extends Controller
             }
         }
 
+        $isFavorited = $userId
+            ? Favorite::where('user_id', $userId)->where('annonce_id', $annonce->id)->exists()
+            : false;
+
         return response()->json([
             'annonce' => array_merge($this->formatAnnonce($annonce), [
                 'description'        => $annonce->description,
@@ -72,6 +86,7 @@ class AnnonceController extends Controller
                 'nombre_de_chambres' => $annonce->nombre_de_chambres,
                 'user_id'            => $annonce->user_id,
                 'host_name'          => $annonce->user->name,
+                'is_favorited'       => $isFavorited,
             ]),
             'avis'                  => $avis,
             'avg_rating'            => $allAvis->count() ? round($allAvis->avg('rating'), 1) : null,

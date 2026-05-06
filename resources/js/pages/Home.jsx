@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import api from '../api';
 import Layout from '../components/Layout';
 import { SuccessAlert } from '../components/Alert';
+import FavoriteButton from '../components/FavoriteButton';
 
 export default function Home() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -206,12 +207,15 @@ function SearchField({ label, name, type = 'text', placeholder, value, onChange,
 function AnnonceCard({ annonce }) {
     return (
         <Link to={`/annonces/${annonce.id}`} className="group block">
-            <div className="aspect-square overflow-hidden rounded-xl mb-3">
+            <div className="aspect-square overflow-hidden rounded-xl mb-3 relative">
                 <img
                     src={annonce.image_url || 'https://via.placeholder.com/400x400?text=Pas+d+image'}
                     alt={annonce.titre}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
+                <div className="absolute top-2 right-2">
+                    <FavoriteButton annonceId={annonce.id} initial={annonce.is_favorited} />
+                </div>
             </div>
             <h3 className="font-bold text-gray-900">{annonce.ville}</h3>
             <p className="text-gray-500 text-sm truncate">{annonce.titre}</p>
