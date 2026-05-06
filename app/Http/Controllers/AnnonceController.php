@@ -54,14 +54,25 @@ class AnnonceController extends Controller
 
         $avis = $allAvis->sortByDesc('created_at')->values()->map(function ($a) {
             return [
-                'id'         => $a->id,
-                'rating'     => $a->rating,
-                'comment'    => $a->comment,
-                'created_at' => $a->created_at,
-                'user_id'    => $a->user_id,
-                'user_name'  => $a->user->name,
+                'id'                   => $a->id,
+                'rating'               => $a->rating,
+                'rating_cleanliness'   => $a->rating_cleanliness,
+                'rating_communication' => $a->rating_communication,
+                'rating_location'      => $a->rating_location,
+                'rating_value'         => $a->rating_value,
+                'comment'              => $a->comment,
+                'created_at'           => $a->created_at,
+                'user_id'              => $a->user_id,
+                'user_name'            => $a->user->name,
             ];
         });
+
+        $criteriaAverages = $allAvis->count() ? [
+            'cleanliness'   => round($allAvis->avg('rating_cleanliness'), 1),
+            'communication' => round($allAvis->avg('rating_communication'), 1),
+            'location'      => round($allAvis->avg('rating_location'), 1),
+            'value'         => round($allAvis->avg('rating_value'), 1),
+        ] : null;
 
         $userId = Auth::id();
         $eligibleReservation = null;
@@ -91,6 +102,7 @@ class AnnonceController extends Controller
             ]),
             'avis'                  => $avis,
             'avg_rating'            => $allAvis->count() ? round($allAvis->avg('rating'), 1) : null,
+            'criteria_averages'     => $criteriaAverages,
             'avis_count'            => $allAvis->count(),
             'eligible_reservation'  => $eligibleReservation,
             'can_update'            => $userId ? Auth::user()->can('update', $annonce) : false,

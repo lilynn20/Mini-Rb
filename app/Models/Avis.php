@@ -13,6 +13,10 @@ class Avis extends Model
         'reservation_id',
         'user_id',
         'rating',
+        'rating_cleanliness',
+        'rating_communication',
+        'rating_location',
+        'rating_value',
         'comment',
     ];
 

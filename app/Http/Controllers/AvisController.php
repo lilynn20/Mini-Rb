@@ -20,15 +20,29 @@ class AvisController extends Controller
         }
 
         $validated = $request->validate([
-            'rating'  => 'required|integer|min:1|max:5',
-            'comment' => 'required|string',
+            'rating_cleanliness'   => 'required|integer|min:1|max:5',
+            'rating_communication' => 'required|integer|min:1|max:5',
+            'rating_location'      => 'required|integer|min:1|max:5',
+            'rating_value'         => 'required|integer|min:1|max:5',
+            'comment'              => 'required|string',
         ]);
 
+        $overall = round((
+            $validated['rating_cleanliness'] +
+            $validated['rating_communication'] +
+            $validated['rating_location'] +
+            $validated['rating_value']
+        ) / 4);
+
         Avis::create([
-            'reservation_id' => $reservation->id,
-            'user_id'        => Auth::id(),
-            'rating'         => $validated['rating'],
-            'comment'        => $validated['comment'],
+            'reservation_id'       => $reservation->id,
+            'user_id'              => Auth::id(),
+            'rating'               => $overall,
+            'rating_cleanliness'   => $validated['rating_cleanliness'],
+            'rating_communication' => $validated['rating_communication'],
+            'rating_location'      => $validated['rating_location'],
+            'rating_value'         => $validated['rating_value'],
+            'comment'              => $validated['comment'],
         ]);
 
         return response()->json(['message' => 'Avis ajouté avec succès.'], 201);

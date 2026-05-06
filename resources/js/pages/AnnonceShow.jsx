@@ -41,7 +41,13 @@ export default function AnnonceShow() {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [nbVoyageurs, setNbVoyageurs] = useState(1);
-    const [review, setReview] = useState({ rating: 5, comment: '' });
+    const [review, setReview] = useState({
+        rating_cleanliness: 5,
+        rating_communication: 5,
+        rating_location: 5,
+        rating_value: 5,
+        comment: '',
+    });
 
     const load = () => {
         api.get(`/annonces/${id}`).then((res) => setData(res.data));
@@ -90,7 +96,13 @@ export default function AnnonceShow() {
         try {
             const { data: res } = await api.post(`/reservations/${data.eligible_reservation.id}/avis`, review);
             setSuccess(res.message);
-            setReview({ rating: 5, comment: '' });
+            setReview({
+                rating_cleanliness: 5,
+                rating_communication: 5,
+                rating_location: 5,
+                rating_value: 5,
+                comment: '',
+            });
             load();
         } catch (err) {
             setErrors(err.response?.data?.errors || err.response?.data?.message);
@@ -110,7 +122,7 @@ export default function AnnonceShow() {
 
     if (!data) return <Layout><p className="p-10 text-gray-400">Chargement...</p></Layout>;
 
-    const { annonce, avis, avg_rating, avis_count, eligible_reservation, can_update, blocked_dates } = data;
+    const { annonce, avis, avg_rating, criteria_averages, avis_count, eligible_reservation, can_update, blocked_dates } = data;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today.getTime() + 86400000);
@@ -172,6 +184,15 @@ export default function AnnonceShow() {
                                 )}
                             </h3>
 
+                            {criteria_averages && (
+                                <div className="grid grid-cols-2 gap-4 mb-8 pb-8 border-b">
+                                    <CriterionRow label="Propreté" value={criteria_averages.cleanliness} />
+                                    <CriterionRow label="Communication" value={criteria_averages.communication} />
+                                    <CriterionRow label="Emplacement" value={criteria_averages.location} />
+                                    <CriterionRow label="Qualité-prix" value={criteria_averages.value} />
+                                </div>
+                            )}
+
                             {avis.length === 0 ? (
                                 <p className="text-gray-500">Aucun avis pour ce logement.</p>
                             ) : (
@@ -207,20 +228,11 @@ export default function AnnonceShow() {
                                 <div className="mt-8 bg-gray-50 rounded-xl p-6">
                                     <h4 className="font-bold text-lg mb-4">Laisser un avis</h4>
                                     <form onSubmit={handleAvisSubmit}>
-                                        <div className="mb-4">
-                                            <label className="block text-gray-700 font-semibold mb-2">Note</label>
-                                            <div className="flex space-x-2">
-                                                {[1, 2, 3, 4, 5].map((i) => (
-                                                    <button
-                                                        type="button"
-                                                        key={i}
-                                                        onClick={() => setReview({ ...review, rating: i })}
-                                                        className={`text-2xl ${i <= review.rating ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-300 transition`}
-                                                    >
-                                                        ★
-                                                    </button>
-                                                ))}
-                                            </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                            <RatingPicker label="Propreté" value={review.rating_cleanliness} onChange={(v) => setReview({ ...review, rating_cleanliness: v })} />
+                                            <RatingPicker label="Communication" value={review.rating_communication} onChange={(v) => setReview({ ...review, rating_communication: v })} />
+                                            <RatingPicker label="Emplacement" value={review.rating_location} onChange={(v) => setReview({ ...review, rating_location: v })} />
+                                            <RatingPicker label="Qualité-prix" value={review.rating_value} onChange={(v) => setReview({ ...review, rating_value: v })} />
                                         </div>
                                         <div className="mb-4">
                                             <label className="block text-gray-700 font-semibold mb-2">Commentaire</label>
@@ -347,5 +359,39 @@ export default function AnnonceShow() {
                 </div>
             </main>
         </Layout>
+    );
+}
+
+function RatingPicker({ label, value, onChange }) {
+    return (
+        <div>
+            <label className="block text-gray-700 font-semibold mb-1 text-sm">{label}</label>
+            <div className="flex space-x-1">
+                {[1, 2, 3, 4, 5].map((i) => (
+                    <button
+                        type="button"
+                        key={i}
+                        onClick={() => onChange(i)}
+                        className={`text-xl ${i <= value ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-300 transition`}
+                    >
+                        ★
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function CriterionRow({ label, value }) {
+    return (
+        <div className="flex justify-between items-center text-sm">
+            <span className="text-gray-700">{label}</span>
+            <span className="flex items-center gap-2">
+                <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-rose-500" style={{ width: `${(value / 5) * 100}%` }} />
+                </div>
+                <span className="font-semibold text-gray-700 w-8 text-right">{value}</span>
+            </span>
+        </div>
     );
 }
