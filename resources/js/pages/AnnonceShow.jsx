@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import Gallery from '../components/Gallery';
 import { ErrorAlert, SuccessAlert } from '../components/Alert';
+
+const toIsoDate = (d) => (d ? d.toISOString().slice(0, 10) : '');
 
 export default function AnnonceShow() {
     const { id } = useParams();
@@ -14,7 +18,8 @@ export default function AnnonceShow() {
     const [success, setSuccess] = useState(null);
     const [errors, setErrors] = useState(null);
 
-    const [reservation, setReservation] = useState({ start_date: '', end_date: '' });
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const [review, setReview] = useState({ rating: 5, comment: '' });
 
     const load = () => {
@@ -27,10 +32,18 @@ export default function AnnonceShow() {
         e.preventDefault();
         setErrors(null);
         setSuccess(null);
+        if (!startDate || !endDate) {
+            setErrors({ dates: ['Choisissez une date d\'arrivée et de départ.'] });
+            return;
+        }
         try {
-            const { data: res } = await api.post(`/annonces/${id}/reserver`, reservation);
+            const { data: res } = await api.post(`/annonces/${id}/reserver`, {
+                start_date: toIsoDate(startDate),
+                end_date: toIsoDate(endDate),
+            });
             setSuccess(res.message);
-            setReservation({ start_date: '', end_date: '' });
+            setStartDate(null);
+            setEndDate(null);
             load();
         } catch (err) {
             setErrors(err.response?.data?.errors || err.response?.data?.message);
@@ -74,9 +87,11 @@ export default function AnnonceShow() {
 
     if (!data) return <Layout><p className="p-10 text-gray-400">Chargement...</p></Layout>;
 
-    const { annonce, avis, avg_rating, avis_count, eligible_reservation, can_update } = data;
-    const today = new Date().toISOString().slice(0, 10);
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+    const { annonce, avis, avg_rating, avis_count, eligible_reservation, can_update, blocked_dates } = data;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today.getTime() + 86400000);
+    const excludedDates = (blocked_dates || []).map((d) => new Date(d));
 
     return (
         <Layout>
@@ -208,25 +223,36 @@ export default function AnnonceShow() {
                                         <div className="border rounded-lg mb-4">
                                             <div className="grid grid-cols-2 border-b">
                                                 <div className="p-3 border-r">
-                                                    <label className="block text-[10px] font-bold uppercase">Arrivée</label>
-                                                    <input
-                                                        type="date"
-                                                        value={reservation.start_date}
-                                                        onChange={(e) => setReservation({ ...reservation, start_date: e.target.value })}
-                                                        min={today}
-                                                        className="w-full text-sm outline-none"
-                                                        required
+                                                    <label className="block text-[10px] font-bold uppercase mb-1">Arrivée</label>
+                                                    <DatePicker
+                                                        selected={startDate}
+                                                        onChange={(d) => {
+                                                            setStartDate(d);
+                                                            if (endDate && d && endDate <= d) setEndDate(null);
+                                                        }}
+                                                        selectsStart
+                                                        startDate={startDate}
+                                                        endDate={endDate}
+                                                        minDate={today}
+                                                        excludeDates={excludedDates}
+                                                        dateFormat="dd/MM/yyyy"
+                                                        placeholderText="JJ/MM/AAAA"
+                                                        className="w-full text-sm outline-none bg-transparent"
                                                     />
                                                 </div>
                                                 <div className="p-3">
-                                                    <label className="block text-[10px] font-bold uppercase">Départ</label>
-                                                    <input
-                                                        type="date"
-                                                        value={reservation.end_date}
-                                                        onChange={(e) => setReservation({ ...reservation, end_date: e.target.value })}
-                                                        min={tomorrow}
-                                                        className="w-full text-sm outline-none"
-                                                        required
+                                                    <label className="block text-[10px] font-bold uppercase mb-1">Départ</label>
+                                                    <DatePicker
+                                                        selected={endDate}
+                                                        onChange={(d) => setEndDate(d)}
+                                                        selectsEnd
+                                                        startDate={startDate}
+                                                        endDate={endDate}
+                                                        minDate={startDate ? new Date(startDate.getTime() + 86400000) : tomorrow}
+                                                        excludeDates={excludedDates}
+                                                        dateFormat="dd/MM/yyyy"
+                                                        placeholderText="JJ/MM/AAAA"
+                                                        className="w-full text-sm outline-none bg-transparent"
                                                     />
                                                 </div>
                                             </div>

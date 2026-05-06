@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Annonce;
 use App\Models\AnnonceImage;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -77,6 +78,7 @@ class AnnonceController extends Controller
             'avis_count'            => $allAvis->count(),
             'eligible_reservation'  => $eligibleReservation,
             'can_update'            => $userId ? Auth::user()->can('update', $annonce) : false,
+            'blocked_dates'         => Reservation::getBlockedDates($annonce->id),
         ]);
     }
 
