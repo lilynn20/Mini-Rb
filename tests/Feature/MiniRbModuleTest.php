@@ -13,20 +13,19 @@ class MiniRbModuleTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function a_user_can_register_with_a_role()
+    public function a_user_can_register()
     {
         $response = $this->post('/register', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
-            'role' => 'hote',
         ]);
 
-        $response->assertRedirect('/');
+        $response->assertRedirect(route('verification.notice'));
         $this->assertDatabaseHas('users', [
             'email' => 'john@example.com',
-            'role' => 'hote',
+            'role' => 'user',
         ]);
     }
 
