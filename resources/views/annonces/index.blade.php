@@ -12,7 +12,7 @@
         <div class="flex items-center space-x-8">
             <!-- Logo -->
             <a href="{{ route('home') }}" class="flex items-center space-x-2 text-rose-500 hover:text-rose-600 transition">
-                <img src="{{ asset('images/logo.svg') }}" class="h-8 w-8" alt="Mini-Rb Logo">
+                <img src="{{ asset('images/logo.png') }}" class="h-8 w-8" alt="Mini-Rb Logo">
                 <span class="font-bold text-2xl tracking-tighter">Mini-Rb</span>
             </a>
 
