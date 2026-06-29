@@ -18,7 +18,7 @@ class ReservationCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🏠 Nouvelle réservation pour ' . $this->reservation->annonce->titre,
+            subject: 'Nouvelle réservation pour ' . $this->reservation->annonce->titre,
         );
     }
 
