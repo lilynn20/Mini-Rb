@@ -8,6 +8,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md text-center">
+        <img src="{{ asset('images/logo.png') }}" class="h-12 w-12 mx-auto mb-2" alt="Mini-Rb Logo">
         <div class="text-rose-500 font-bold text-2xl mb-6">Mini-Rb</div>
 
         <div class="text-5xl mb-4">📧</div>

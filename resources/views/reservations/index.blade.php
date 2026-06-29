@@ -8,7 +8,10 @@
 </head>
 <body class="bg-gray-50">
     <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b">
-        <a href="{{ route('home') }}" class="text-rose-500 font-bold text-2xl">Mini-Rb</a>
+        <a href="{{ route('home') }}" class="flex items-center space-x-2 text-rose-500 hover:text-rose-600 transition">
+            <img src="{{ asset('images/logo.png') }}" class="h-8 w-8" alt="Mini-Rb Logo">
+            <span class="font-bold text-2xl tracking-tighter">Mini-Rb</span>
+        </a>
         <div class="flex items-center space-x-4">
             <a href="{{ route('reservations.index') }}" class="text-rose-500 font-semibold border-b-2 border-rose-500">Mes Réservations</a>
             <a href="{{ route('annonces.create') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Publier</a>
