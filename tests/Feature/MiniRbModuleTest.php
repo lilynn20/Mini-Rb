@@ -99,8 +99,8 @@ class MiniRbModuleTest extends TestCase
 
         // Test filtre par prix max
         $response = $this->get('/?prix_max=150');
-        $response->assertSee('100$');
-        $response->assertDontSee('200$');
-        $response->assertDontSee('300$');
+        $response->assertSee('100 DH');
+        $response->assertDontSee('200 DH');
+        $response->assertDontSee('300 DH');
     }
 }

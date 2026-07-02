@@ -21,11 +21,11 @@
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="absolute top-full left-0 w-48 bg-white shadow-xl rounded-xl py-2 border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                        <a href="/?ville=France" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">France</a>
-                        <a href="/?ville=Maroc" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Maroc</a>
-                        <a href="/?ville=Espagne" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Espagne</a>
-                        <a href="/?ville=Italie" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Italie</a>
-                        <a href="/?ville=USA" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">États-Unis</a>
+                        <a href="/?ville=Marrakech" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Marrakech</a>
+                        <a href="/?ville=Fès" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Fès</a>
+                        <a href="/?ville=Casablanca" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Casablanca</a>
+                        <a href="/?ville=Rabat" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Rabat</a>
+                        <a href="/?ville=Tanger" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Tanger</a>
                     </div>
                 </div>
                 <div class="group relative py-4">
@@ -34,11 +34,11 @@
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="absolute top-full left-0 w-48 bg-white shadow-xl rounded-xl py-2 border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                        <a href="/?ville=Paris" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Paris</a>
-                        <a href="/?ville=Casablanca" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Casablanca</a>
                         <a href="/?ville=Marrakech" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Marrakech</a>
-                        <a href="/?ville=Londres" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Londres</a>
-                        <a href="/?ville=Barcelone" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Barcelone</a>
+                        <a href="/?ville=Casablanca" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Casablanca</a>
+                        <a href="/?ville=Chefchaouen" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Chefchaouen</a>
+                        <a href="/?ville=Agadir" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Agadir</a>
+                        <a href="/?ville=Essaouira" class="block px-4 py-2 hover:bg-gray-50 hover:text-rose-500">Essaouira</a>
                     </div>
                 </div>
             </div>
@@ -90,13 +90,12 @@
         <p class="text-gray-600 mb-6 underline font-semibold">{{ $annonce->adresse }}, {{ $annonce->ville }}</p>
 
         <div class="rounded-2xl overflow-hidden mb-10 h-[500px]">
-            @if($annonce->image)
-                <img src="{{ Storage::disk('s3')->url($annonce->image) }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover">
-            @else
-                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span class="text-gray-400 text-xl">Pas d'image</span>
-                </div>
-            @endif
+            @php
+                $imgUrl = $annonce->image
+                    ? (\Illuminate\Support\Str::startsWith($annonce->image, 'http') ? $annonce->image : \Storage::disk('s3')->url($annonce->image))
+                    : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80&fit=crop';
+            @endphp
+            <img src="{{ $imgUrl }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover">
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -205,7 +204,7 @@
             <div class="md:col-span-1">
                 <div class="border rounded-2xl p-6 shadow-xl sticky top-20">
                     <p class="text-2xl font-bold mb-6">
-                        <span class="text-gray-900">{{ $annonce->prix_par_nuit }}$</span>
+                        <span class="text-gray-900">{{ $annonce->prix_par_nuit }} DH</span>
                         <span class="text-gray-500 font-normal text-base"> par nuit</span>
                     </p>
 

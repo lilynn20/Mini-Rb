@@ -40,7 +40,7 @@
             <p><strong>Ville :</strong> {{ $reservation->annonce->ville }}</p>
             <p><strong>Arrivée :</strong> {{ \Carbon\Carbon::parse($reservation->start_date)->format('d/m/Y') }}</p>
             <p><strong>Départ :</strong> {{ \Carbon\Carbon::parse($reservation->end_date)->format('d/m/Y') }}</p>
-            <p><strong>Total :</strong> {{ $reservation->total_price }}$</p>
+            <p><strong>Total :</strong> {{ $reservation->total_price }} DH</p>
         </div>
 
         <a href="{{ config('app.url') }}/mes-reservations" class="btn">Voir mes réservations</a>

@@ -27,7 +27,7 @@
             <p><strong>Voyageur :</strong> {{ $reservation->user->name }}</p>
             <p><strong>Arrivée :</strong> {{ \Carbon\Carbon::parse($reservation->start_date)->format('d/m/Y') }}</p>
             <p><strong>Départ :</strong> {{ \Carbon\Carbon::parse($reservation->end_date)->format('d/m/Y') }}</p>
-            <p><strong>Total :</strong> {{ $reservation->total_price }}$</p>
+            <p><strong>Total :</strong> {{ $reservation->total_price }} DH</p>
         </div>
 
         <p>Connectez-vous pour accepter ou refuser cette réservation.</p>

@@ -50,11 +50,12 @@
                 <div class="bg-white rounded-2xl shadow-sm border mb-4 p-6 flex flex-col md:flex-row gap-6">
                     {{-- Image --}}
                     <div class="w-full md:w-36 h-28 rounded-xl overflow-hidden flex-shrink-0">
-                        @if($reservation->annonce->image)
-                            <img src="{{ Storage::disk('s3')->url($reservation->annonce->image) }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">Pas d'image</div>
-                        @endif
+                        @php
+                            $imgUrl = $reservation->annonce->image
+                                ? (\Illuminate\Support\Str::startsWith($reservation->annonce->image, 'http') ? $reservation->annonce->image : \Storage::disk('s3')->url($reservation->annonce->image))
+                                : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80&fit=crop';
+                        @endphp
+                        <img src="{{ $imgUrl }}" class="w-full h-full object-cover">
                     </div>
 
                     {{-- Details --}}
@@ -67,7 +68,7 @@
                             Du <strong>{{ \Carbon\Carbon::parse($reservation->start_date)->format('d/m/Y') }}</strong>
                             au <strong>{{ \Carbon\Carbon::parse($reservation->end_date)->format('d/m/Y') }}</strong>
                         </p>
-                        <p class="text-gray-600 text-sm">Total : <strong>{{ $reservation->total_price }}$</strong></p>
+                        <p class="text-gray-600 text-sm">Total : <strong>{{ $reservation->total_price }} DH</strong></p>
                     </div>
 
                     {{-- Status + Actions --}}
@@ -129,11 +130,12 @@
                 <div class="bg-white rounded-2xl shadow-sm border mb-4 p-6 flex flex-col md:flex-row gap-6">
                     {{-- Image --}}
                     <div class="w-full md:w-36 h-28 rounded-xl overflow-hidden flex-shrink-0">
-                        @if($reservation->annonce->image)
-                            <img src="{{ Storage::disk('s3')->url($reservation->annonce->image) }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">Pas d'image</div>
-                        @endif
+                        @php
+                            $imgUrl = $reservation->annonce->image
+                                ? (\Illuminate\Support\Str::startsWith($reservation->annonce->image, 'http') ? $reservation->annonce->image : \Storage::disk('s3')->url($reservation->annonce->image))
+                                : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80&fit=crop';
+                        @endphp
+                        <img src="{{ $imgUrl }}" class="w-full h-full object-cover">
                     </div>
 
                     {{-- Details --}}
@@ -146,7 +148,7 @@
                             Du <strong>{{ \Carbon\Carbon::parse($reservation->start_date)->format('d/m/Y') }}</strong>
                             au <strong>{{ \Carbon\Carbon::parse($reservation->end_date)->format('d/m/Y') }}</strong>
                         </p>
-                        <p class="text-gray-600 text-sm">Total : <strong>{{ $reservation->total_price }}$</strong></p>
+                        <p class="text-gray-600 text-sm">Total : <strong>{{ $reservation->total_price }} DH</strong></p>
                     </div>
 
                     {{-- Status + Actions --}}

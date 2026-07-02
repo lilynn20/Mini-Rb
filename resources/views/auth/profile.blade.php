@@ -133,15 +133,16 @@
                     <div class="flex items-center justify-between border rounded-xl p-4">
                         <div class="flex items-center gap-4">
                             <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                                @if($annonce->image)
-                                    <img src="{{ Storage::disk('s3')->url($annonce->image) }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">No img</div>
-                                @endif
+                                @php
+                                    $imgUrl = $annonce->image
+                                        ? (\Illuminate\Support\Str::startsWith($annonce->image, 'http') ? $annonce->image : \Storage::disk('s3')->url($annonce->image))
+                                        : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80&fit=crop';
+                                @endphp
+                                <img src="{{ $imgUrl }}" class="w-full h-full object-cover">
                             </div>
                             <div>
                                 <a href="{{ route('annonces.show', $annonce) }}" class="font-semibold hover:text-rose-500">{{ $annonce->titre }}</a>
-                                <p class="text-gray-500 text-sm">{{ $annonce->ville }} · {{ $annonce->prix_par_nuit }}$/nuit</p>
+                                <p class="text-gray-500 text-sm">{{ $annonce->ville }} · {{ $annonce->prix_par_nuit }} DH/nuit</p>
                             </div>
                         </div>
                         <div class="flex gap-2">

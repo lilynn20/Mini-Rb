@@ -126,7 +126,7 @@
                                 </a>
                             </td>
                             <td class="px-6 py-4 text-gray-500">{{ $annonce->ville }}</td>
-                            <td class="px-6 py-4">{{ $annonce->prix_par_nuit }}$</td>
+                            <td class="px-6 py-4">{{ $annonce->prix_par_nuit }} DH</td>
                             <td class="px-6 py-4 text-gray-500">{{ $annonce->user->name }}</td>
                             <td class="px-6 py-4">
                                 <form action="{{ route('admin.annonces.delete', $annonce->id) }}" method="POST"
@@ -182,7 +182,7 @@
                                 {{ \Carbon\Carbon::parse($reservation->start_date)->format('d/m/Y') }}
                                 → {{ \Carbon\Carbon::parse($reservation->end_date)->format('d/m/Y') }}
                             </td>
-                            <td class="px-6 py-4">{{ $reservation->total_price }}$</td>
+                            <td class="px-6 py-4">{{ $reservation->total_price }} DH</td>
                             <td class="px-6 py-4">
                                 <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $statusColors[$reservation->status] ?? '' }}">
                                     {{ $statusLabels[$reservation->status] ?? $reservation->status }}
