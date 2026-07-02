@@ -7,6 +7,7 @@ use App\Models\Annonce;
 use App\Models\Reservation;
 use App\Models\Avis;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ReservationAvisTest extends TestCase
@@ -138,7 +139,7 @@ class ReservationAvisTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function user_can_leave_a_review_on_accepted_reservation()
     {
         $host = User::factory()->create(['role' => 'hote']);
@@ -148,8 +149,8 @@ class ReservationAvisTest extends TestCase
         $reservation = Reservation::create([
             'annonce_id'  => $annonce->id,
             'user_id'     => $traveler->id,
-            'start_date'  => '2027-06-01',
-            'end_date'    => '2027-06-05',
+            'start_date'  => now()->subDays(10)->toDateString(),
+            'end_date'    => now()->subDays(5)->toDateString(),
             'total_price' => 400,
             'status'      => 'accepted',
         ]);
@@ -168,7 +169,7 @@ class ReservationAvisTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_leave_a_review_on_pending_reservation()
     {
         $host = User::factory()->create(['role' => 'hote']);

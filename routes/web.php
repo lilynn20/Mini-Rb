@@ -56,9 +56,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/avis/{id}', [AvisController::class, 'destroy'])->name('avis.destroy');
 
     // Admin dashboard
-    Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
-    Route::delete('/admin/users/{id}', [\App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
-    Route::delete('/admin/annonces/{id}', [\App\Http\Controllers\AdminController::class, 'deleteAnnonce'])->name('admin.annonces.delete');
+    Route::middleware('admin')->group(function () {
+        Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
+        Route::delete('/admin/users/{id}', [\App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.users.delete');
+        Route::delete('/admin/annonces/{id}', [\App\Http\Controllers\AdminController::class, 'deleteAnnonce'])->name('admin.annonces.delete');
+    });
 
     // Profile
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');

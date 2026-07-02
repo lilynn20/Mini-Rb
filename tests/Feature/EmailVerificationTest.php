@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function the_verification_email_actually_contains_a_clickable_verification_link()
     {
         $user = User::create([
@@ -41,7 +42,7 @@ class EmailVerificationTest extends TestCase
         $this->assertStringContainsString('Vérifier mon email', $rendered);
     }
 
-    /** @test */
+    #[Test]
     public function registering_sends_the_verification_mail_and_redirects_to_the_notice()
     {
         Mail::fake();
@@ -57,7 +58,7 @@ class EmailVerificationTest extends TestCase
         Mail::assertSent(VerifyEmailMail::class, fn ($mail) => $mail->hasTo('jane@example.com'));
     }
 
-    /** @test */
+    #[Test]
     public function clicking_the_link_verifies_the_account_and_shows_the_green_banner_on_home()
     {
         Event::fake([Verified::class]);
@@ -84,7 +85,7 @@ class EmailVerificationTest extends TestCase
         Event::assertDispatched(Verified::class);
     }
 
-    /** @test */
+    #[Test]
     public function an_already_verified_user_visiting_the_notice_is_bounced_home()
     {
         $user = User::create([

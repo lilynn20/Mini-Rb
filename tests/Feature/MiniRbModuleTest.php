@@ -6,13 +6,14 @@ use App\Models\User;
 use App\Models\Annonce;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MiniRbModuleTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function a_user_can_register()
     {
         $response = $this->post('/register', [
@@ -29,7 +30,7 @@ class MiniRbModuleTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function a_user_can_create_an_annonce()
     {
         $user = User::factory()->create(['role' => 'hote']);
@@ -52,7 +53,7 @@ class MiniRbModuleTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function only_owner_or_admin_can_update_an_annonce()
     {
         $owner = User::factory()->create(['role' => 'hote']);
@@ -83,7 +84,7 @@ class MiniRbModuleTest extends TestCase
         $this->get("/annonces/{$annonce->id}/edit")->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function search_and_filters_work_correctly()
     {
         Annonce::factory()->create(['ville' => 'Paris', 'prix_par_nuit' => 100]);

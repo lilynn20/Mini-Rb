@@ -30,6 +30,12 @@
             </div>
         @endif
 
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                {{ session('error') }}
+            </div>
+        @endif
+
         {{-- Stats --}}
         <div class="grid grid-cols-3 gap-6 mb-10">
             <div class="bg-white rounded-2xl p-6 shadow-sm border text-center">

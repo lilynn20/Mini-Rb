@@ -75,6 +75,12 @@
             </div>
         @endif
 
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-6">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Hero Section & Search Bar Overlay -->
         <div class="relative mb-20">
             <!-- Hero Banner -->

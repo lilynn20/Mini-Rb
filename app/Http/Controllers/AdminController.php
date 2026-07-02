@@ -21,6 +21,15 @@ class AdminController extends Controller
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
+
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+        }
+
+        if ($user->isAdmin() && User::where('role', 'admin')->count() <= 1) {
+            return back()->with('error', 'Impossible de supprimer le dernier administrateur.');
+        }
+
         $user->delete();
         return back()->with('success', 'Utilisateur supprimé.');
     }
