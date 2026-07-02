@@ -29,7 +29,7 @@ class AnnonceController extends Controller
             $query->where('nombre_de_chambres', '>=', ceil($request->nb_personne / 2));
         }
 
-        $annonces = $query->get();
+        $annonces = $query->paginate(9)->withQueryString();
         return view('annonces.index', compact('annonces'));
     }
 

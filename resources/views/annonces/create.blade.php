@@ -37,7 +37,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-semibold mb-1">Ville</label>
-                        <input type="text" name="ville" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Ex: Paris" required>
+                        <input type="text" name="ville" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Ex: Marrakech" required>
                     </div>
                     <div>
                         <label class="block text-gray-700 font-semibold mb-1">Adresse</label>

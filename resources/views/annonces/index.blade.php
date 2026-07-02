@@ -20,7 +20,7 @@
             <div class="hidden md:flex items-center space-x-6 text-sm font-semibold text-gray-600">
                 <div class="group relative py-4">
                     <button class="hover:text-rose-500 transition flex items-center">
-                        Pays populaires
+                        Régions du Maroc
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="absolute top-full left-0 w-48 bg-white shadow-xl rounded-xl py-2 border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
@@ -156,6 +156,10 @@
             @empty
                 <p class="text-gray-500 col-span-full text-center py-10">Aucune annonce disponible pour le moment.</p>
             @endforelse
+        </div>
+
+        <div class="mt-12">
+            {{ $annonces->links() }}
         </div>
         <!-- Section d'information -->
         <div class="mt-20 border-t pt-16">
