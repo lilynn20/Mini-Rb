@@ -18,6 +18,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Email verification
 Route::get('/email/verify', function () {
+    $user = auth()->user();
+
+    if ($user && $user->hasVerifiedEmail()) {
+        return redirect()->route('home')->with('success', 'Votre adresse email est déjà vérifiée.');
+    }
+
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 

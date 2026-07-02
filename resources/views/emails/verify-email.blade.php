@@ -4,43 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vérification email - Mini-Rb</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <meta http-equiv="refresh" content="5">
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md text-center">
-        <div class="text-rose-500 font-bold text-2xl mb-6">Mini-Rb</div>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: Arial, sans-serif;">
+    <div style="max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 16px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+        <div style="font-size: 24px; font-weight: 700; color: #f43f5e; margin-bottom: 20px;">Mini-Rb</div>
 
-        <div class="text-5xl mb-4">📧</div>
-        <h2 class="text-2xl font-bold mb-2">Vérifiez votre email</h2>
-        <p class="text-gray-500 mb-2">
-            Nous avons envoyé un lien de vérification à votre adresse email.
-            Cliquez sur le lien pour activer votre compte.
+        <h2 style="margin: 0 0 12px; font-size: 24px; color: #111827;">Bonjour {{ $userName }},</h2>
+        <p style="margin: 0 0 16px; color: #4b5563; line-height: 1.6;">
+            Merci pour votre inscription sur Mini-Rb. Pour activer votre compte, veuillez vérifier votre adresse email en cliquant sur le bouton ci-dessous.
         </p>
-        <p class="text-gray-400 text-sm mb-6">Cette page se rafraîchit automatiquement toutes les 5 secondes.</p>
 
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                {{ session('success') }}
-            </div>
-        @endif
+        <p style="margin: 0 0 20px;">
+            <a href="{{ $verificationUrl }}" style="display: inline-block; background-color: #f43f5e; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 999px; font-weight: 600;">
+                Vérifier mon email
+            </a>
+        </p>
 
-        <form action="{{ route('verification.send') }}" method="POST">
-            @csrf
-            <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg font-semibold hover:bg-rose-600 transition">
-                Renvoyer le lien de vérification
-            </button>
-        </form>
-
-        <form action="{{ route('logout') }}" method="POST" class="mt-4">
-            @csrf
-            <button type="submit" class="text-gray-400 hover:text-gray-600 text-sm">
-                Se déconnecter
-            </button>
-        </form>
-        <a href="{{ route('home') }}" class="block mt-3 text-rose-500 hover:text-rose-700 font-semibold text-sm">
-    Retourner à l'accueil →
-</a>
+        <p style="margin: 0 0 8px; color: #6b7280; font-size: 14px; line-height: 1.6;">
+            Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :
+        </p>
+        <p style="margin: 0; color: #6b7280; font-size: 14px; word-break: break-all;">
+            {{ $verificationUrl }}
+        </p>
     </div>
 </body>
 </html>
