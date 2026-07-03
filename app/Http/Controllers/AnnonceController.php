@@ -26,8 +26,21 @@ class AnnonceController extends Controller
         }
 
         if ($request->filled('nb_personne')) {
-            // On considère que le nombre de chambres est un indicateur de capacité (ex: 2 personnes par chambre)
             $query->where('nombre_de_chambres', '>=', ceil($request->nb_personne / 2));
+        }
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereDoesntHave('reservations', function ($q) use ($request) {
+                $q->whereIn('status', ['pending', 'accepted'])
+                  ->where(function ($query) use ($request) {
+                      $query->whereBetween('start_date', [$request->start_date, $request->end_date])
+                            ->orWhereBetween('end_date', [$request->start_date, $request->end_date])
+                            ->orWhere(function ($q) use ($request) {
+                                $q->where('start_date', '<=', $request->start_date)
+                                  ->where('end_date', '>=', $request->end_date);
+                            });
+                  });
+            });
         }
 
         $annonces = $query->paginate(9)->withQueryString();

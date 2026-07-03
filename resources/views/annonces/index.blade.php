@@ -95,31 +95,35 @@
             </div>
 
             <!-- Barre de recherche (Floating Overlay) -->
-            <div class="absolute bottom-0 left-1/2 transform translate-x-1/2 -translate-y-1/2 w-full px-4 max-w-4xl" style="left: 50%; transform: translate(-50%, 50%);">
+            <div class="absolute bottom-0 left-1/2 transform translate-x-1/2 -translate-y-1/2 w-full px-4 max-w-5xl" style="left: 50%; transform: translate(-50%, 50%);">
                 <div class="bg-white p-2 rounded-full shadow-2xl border flex items-center">
-                    <form action="{{ route('home') }}" method="GET" class="flex w-full items-center">
+                    <form action="{{ route('home') }}" method="GET" class="flex w-full items-center gap-2">
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Destination</label>
                             <input type="text" name="ville" value="{{ request('ville') }}" placeholder="Où allez-vous ?" class="w-full outline-none text-sm font-medium">
                         </div>
                         <div class="flex-1 px-6 border-r">
-                            <label class="block text-[10px] font-bold uppercase text-gray-500">Prix Max</label>
-                            <input type="number" name="prix_max" value="{{ request('prix_max') }}" placeholder="Budget max" class="w-full outline-none text-sm font-medium">
+                            <label class="block text-[10px] font-bold uppercase text-gray-500">Arrivée</label>
+                            <input type="date" name="start_date" value="{{ request('start_date') }}" min="{{ date('Y-m-d') }}" class="w-full outline-none text-sm font-medium">
                         </div>
                         <div class="flex-1 px-6 border-r">
-                            <label class="block text-[10px] font-bold uppercase text-gray-500">Nb Personne</label>
-                            <input type="number" name="nb_personne" value="{{ request('nb_personne') }}" placeholder="Combien ?" class="w-full outline-none text-sm font-medium" min="1">
+                            <label class="block text-[10px] font-bold uppercase text-gray-500">Départ</label>
+                            <input type="date" name="end_date" value="{{ request('end_date') }}" min="{{ date('Y-m-d', strtotime('+1 day')) }}" class="w-full outline-none text-sm font-medium">
+                        </div>
+                        <div class="flex-1 px-6 border-r">
+                            <label class="block text-[10px] font-bold uppercase text-gray-500">Budget Max (DH)</label>
+                            <input type="number" name="prix_max" value="{{ request('prix_max') }}" placeholder="Budget" class="w-full outline-none text-sm font-medium" min="0">
                         </div>
                         <div class="px-2">
-                            <button type="submit" class="bg-rose-500 text-white p-4 rounded-full hover:bg-rose-600 transition flex items-center justify-center">
+                            <button type="submit" class="bg-rose-500 text-white p-3 rounded-full hover:bg-rose-600 transition flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
-                                <span class="ml-2 font-bold hidden md:inline">Rechercher</span>
+                                <span class="ml-1 font-bold hidden md:inline">Chercher</span>
                             </button>
                         </div>
-                        @if(request()->anyFilled(['ville', 'prix_max', 'nb_personne']))
-                            <a href="{{ route('home') }}" class="text-xs text-gray-400 hover:text-rose-500 underline ml-2 pr-4">Effacer</a>
+                        @if(request()->anyFilled(['ville', 'prix_max', 'nb_personne', 'start_date', 'end_date']))
+                            <a href="{{ route('home') }}" class="text-xs text-gray-400 hover:text-rose-500 underline ml-2 pr-2">Réinitialiser</a>
                         @endif
                     </form>
                 </div>
