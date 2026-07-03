@@ -97,7 +97,20 @@
 
             <!-- Barre de recherche (Floating Overlay) -->
             <div class="absolute bottom-0 left-1/2 transform translate-x-1/2 -translate-y-1/2 w-full px-4 max-w-5xl" style="left: 50%; transform: translate(-50%, 50%);">
-                <div class="bg-white p-2 rounded-full shadow-2xl border flex items-center">
+                <div class="bg-white p-2 rounded-full shadow-2xl border flex items-center" x-data="{
+                    startDate: '{{ request('start_date') }}',
+                    endDate: '{{ request('end_date') }}',
+                    nights: 0,
+                    updateNights() {
+                        if (this.startDate && this.endDate && this.endDate > this.startDate) {
+                            const start = new Date(this.startDate);
+                            const end = new Date(this.endDate);
+                            this.nights = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+                        } else {
+                            this.nights = 0;
+                        }
+                    }
+                }" @change="updateNights()" @input="updateNights()">
                     <form action="{{ route('home') }}" method="GET" class="flex w-full items-center gap-2">
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Destination</label>
@@ -105,11 +118,11 @@
                         </div>
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Arrivée</label>
-                            <input type="date" name="start_date" value="{{ request('start_date') }}" min="{{ date('Y-m-d') }}" class="w-full outline-none text-sm font-medium">
+                            <input type="date" name="start_date" x-model="startDate" value="{{ request('start_date') }}" min="{{ date('Y-m-d') }}" class="w-full outline-none text-sm font-medium">
                         </div>
                         <div class="flex-1 px-6 border-r">
-                            <label class="block text-[10px] font-bold uppercase text-gray-500">Départ</label>
-                            <input type="date" name="end_date" value="{{ request('end_date') }}" min="{{ date('Y-m-d', strtotime('+1 day')) }}" class="w-full outline-none text-sm font-medium">
+                            <label class="block text-[10px] font-bold uppercase text-gray-500">Départ <span x-show="nights > 0" class="text-rose-500 font-bold">(<span x-text="nights"></span> nuit<span x-show="nights > 1">s</span>)</span></label>
+                            <input type="date" name="end_date" x-model="endDate" value="{{ request('end_date') }}" :min="startDate ? new Date(new Date(startDate).getTime() + 86400000).toISOString().split('T')[0] : '{{ date('Y-m-d', strtotime('+1 day')) }}'" class="w-full outline-none text-sm font-medium">
                         </div>
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Budget Max (DH)</label>
