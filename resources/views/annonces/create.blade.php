@@ -23,6 +23,16 @@
 
         <form action="{{ route('annonces.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+
+            @if($errors->any())
+                <div class="mb-6 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg">
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-1">Titre de l'annonce</label>
@@ -37,7 +47,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-semibold mb-1">Ville</label>
-                        <input type="text" name="ville" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Ex: Marrakech" required>
+                        <input type="text" name="ville" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" placeholder="Ex: Paris" required>
                     </div>
                     <div>
                         <label class="block text-gray-700 font-semibold mb-1">Adresse</label>

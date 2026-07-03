@@ -47,7 +47,7 @@ class AnnonceController extends Controller
             'ville' => 'required|string|max:255',
             'prix_par_nuit' => 'required|numeric|min:0',
             'nombre_de_chambres' => 'required|integer|min:1',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
         $imagePath = null;
@@ -92,7 +92,7 @@ class AnnonceController extends Controller
             'ville' => 'required|string|max:255',
             'prix_par_nuit' => 'required|numeric|min:0',
             'nombre_de_chambres' => 'required|integer|min:1',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
         $data = [

@@ -24,6 +24,16 @@
         <form action="{{ route('annonces.update', $annonce) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+
+            @if($errors->any())
+                <div class="mb-6 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg">
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-1">Titre de l'annonce</label>
