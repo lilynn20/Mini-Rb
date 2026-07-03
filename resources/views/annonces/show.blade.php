@@ -93,12 +93,12 @@
                 @if(Auth::id() !== $annonce->user_id)
                     <div x-data="{ isFavorited: {{ Auth::user()->favorites()->where('annonce_id', $annonce->id)->exists() ? 'true' : 'false' }} }">
                         <button @click="
-                            $fetch('{{ route('favorites.toggle', $annonce->id) }}', {
+                            fetch('{{ route('favorites.toggle', $annonce->id) }}', {
                                 method: 'POST',
                                 headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
                             }).then(r => r.json()).then(data => {
                                 if (data.success) isFavorited = data.isFavorited;
-                            });
+                            }).catch(e => console.error('Error:', e));
                         " class="flex items-center space-x-2 px-4 py-2 border rounded-lg hover:bg-rose-50 transition">
                             <svg class="w-5 h-5 transition" :class="isFavorited ? 'fill-rose-500 text-rose-500' : 'text-gray-400'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                             <span x-text="isFavorited ? 'Retirer' : 'Ajouter'"></span> à favoris
