@@ -98,7 +98,7 @@
             <!-- Barre de recherche (Floating Overlay) -->
             <div class="absolute bottom-0 left-1/2 transform translate-x-1/2 -translate-y-1/2 w-full px-4 max-w-5xl" style="left: 50%; transform: translate(-50%, 50%);">
                 <div class="bg-white p-2 rounded-full shadow-2xl border flex items-center">
-                    <form action="{{ route('home') }}" method="GET" class="flex w-full items-center gap-2" x-data="{
+                    <form id="search-form" action="{{ route('home') }}" method="GET" class="flex w-full items-center gap-2" x-data="{
                         nights: 0,
                         validateDates(e) {
                             const start = document.querySelector('input[name=start_date]').value;
@@ -139,6 +139,10 @@
                             <input type="date" name="end_date" value="{{ request('end_date') }}" class="w-full outline-none text-sm font-medium" @change="updateDisplay()">
                         </div>
                         <div class="flex-1 px-6 border-r">
+                            <label class="block text-[10px] font-bold uppercase text-gray-500">Personnes</label>
+                            <input type="number" name="nb_personne" value="{{ request('nb_personne') }}" placeholder="Nb" class="w-full outline-none text-sm font-medium" min="1">
+                        </div>
+                        <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Budget Max (DH)</label>
                             <input type="number" name="prix_max" value="{{ request('prix_max') }}" placeholder="Budget" class="w-full outline-none text-sm font-medium" min="0">
                         </div>
@@ -150,11 +154,26 @@
                                 <span class="ml-1 font-bold hidden md:inline">Chercher</span>
                             </button>
                         </div>
-                        @if(request()->anyFilled(['ville', 'prix_max', 'nb_personne', 'start_date', 'end_date']))
+                        @if(request()->anyFilled(['ville', 'prix_max', 'nb_personne', 'start_date', 'end_date', 'amenities']))
                             <a href="{{ route('home') }}" class="text-xs text-gray-400 hover:text-rose-500 underline ml-2 pr-2">Réinitialiser</a>
                         @endif
                     </form>
                 </div>
+
+                @if($amenities->count())
+                    <div class="mt-4 bg-white rounded-2xl shadow-xl border p-6">
+                        <h3 class="text-sm font-bold uppercase text-gray-600 mb-4">Équipements</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            @foreach($amenities as $amenity)
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" name="amenities[]" value="{{ $amenity->id }}" form="search-form" @if(is_array(request('amenities')) && in_array($amenity->id, request('amenities'))) checked @endif class="w-4 h-4 rounded">
+                                    <span class="text-sm text-gray-600">{{ $amenity->icon }} {{ $amenity->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <button type="submit" form="search-form" class="mt-4 bg-rose-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-rose-600 transition">Appliquer les filtres</button>
+                    </div>
+                @endif
             </div>
         </div>
 
