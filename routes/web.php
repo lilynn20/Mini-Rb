@@ -51,6 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/reservations/{id}/accept', [ReservationController::class, 'accept'])->name('reservations.accept');
     Route::patch('/reservations/{id}/refuse', [ReservationController::class, 'refuse'])->name('reservations.refuse');
     Route::patch('/reservations/{id}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
+    Route::get('/reservations/{id}/receipt', [ReservationController::class, 'downloadReceipt'])->name('reservations.receipt');
 
     // Avis (reviews)
     Route::post('/reservations/{id}/avis', [AvisController::class, 'store'])->name('avis.store');

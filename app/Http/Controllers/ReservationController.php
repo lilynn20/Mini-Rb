@@ -9,6 +9,7 @@ use App\Mail\ReservationStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservationController extends Controller
 {
@@ -131,9 +132,24 @@ class ReservationController extends Controller
         $reservation->status = 'cancelled';
         $reservation->save();
 
-        // Notify host
         Mail::to($reservation->annonce->user->email)->send(new ReservationStatusChanged($reservation));
 
         return back()->with('success', 'Réservation annulée.');
+    }
+
+    public function downloadReceipt($id)
+    {
+        $reservation = Reservation::with(['annonce', 'user'])->findOrFail($id);
+
+        if (Auth::id() !== $reservation->user_id && Auth::id() !== $reservation->annonce->user_id) {
+            abort(403, 'Non autorisé');
+        }
+
+        if ($reservation->status !== 'accepted') {
+            abort(403, 'Le reçu n\'est disponible que pour les réservations confirmées');
+        }
+
+        $pdf = Pdf::view('receipts.reservation', compact('reservation'));
+        return $pdf->download("receipt-{$reservation->id}.pdf");
     }
 }
