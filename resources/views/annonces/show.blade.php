@@ -294,9 +294,7 @@
                                     plugins: [new rangePlugin({
                                         input: "#end_date"
                                     })],
-                                    dateFormat: "Y-m-d",
-                                    altInput: true,
-                                    altFormat: "d/m/Y",
+                                    dateFormat: "d/m/Y",
                                     locale: "fr",
                                     showMonths: 2
                                 });

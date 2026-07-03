@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Carbon;
 
 class ReservationController extends Controller
 {
@@ -37,9 +38,30 @@ class ReservationController extends Controller
     public function store(Request $request, $annonceId)
     {
         $request->validate([
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date'   => 'required|date|after:start_date',
+            'start_date' => 'required|date',
+            'end_date'   => 'required|date',
         ]);
+
+        // Parse dates - handle both d/m/Y (from Flatpickr) and Y-m-d (from tests) formats
+        try {
+            $startDate = Carbon::createFromFormat('d/m/Y', $request->start_date)->startOfDay();
+        } catch (\Exception $e) {
+            $startDate = Carbon::parse($request->start_date)->startOfDay();
+        }
+
+        try {
+            $endDate = Carbon::createFromFormat('d/m/Y', $request->end_date)->startOfDay();
+        } catch (\Exception $e) {
+            $endDate = Carbon::parse($request->end_date)->startOfDay();
+        }
+
+        if ($startDate->isPast()) {
+            return back()->withErrors(['start_date' => 'La date d\'arrivée doit être aujourd\'hui ou dans le futur.']);
+        }
+
+        if ($endDate <= $startDate) {
+            return back()->withErrors(['end_date' => 'La date de départ doit être après la date d\'arrivée.']);
+        }
 
         $annonce = Annonce::findOrFail($annonceId);
 
@@ -48,12 +70,12 @@ class ReservationController extends Controller
         }
 
         $overlap = Reservation::where('annonce_id', $annonce->id)
-            ->where(function ($query) use ($request) {
-                $query->whereBetween('start_date', [$request->start_date, $request->end_date])
-                      ->orWhereBetween('end_date', [$request->start_date, $request->end_date])
-                      ->orWhere(function ($q) use ($request) {
-                          $q->where('start_date', '<=', $request->start_date)
-                            ->where('end_date', '>=', $request->end_date);
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('start_date', [$startDate, $endDate])
+                      ->orWhereBetween('end_date', [$startDate, $endDate])
+                      ->orWhere(function ($q) use ($startDate, $endDate) {
+                          $q->where('start_date', '<=', $startDate)
+                            ->where('end_date', '>=', $endDate);
                       });
             })
             ->whereNotIn('status', ['cancelled', 'refused'])
@@ -63,13 +85,13 @@ class ReservationController extends Controller
             return back()->withErrors(['dates' => 'Ces dates sont déjà réservées pour cette annonce.']);
         }
 
-        $total = Reservation::calculateTotalPrice($request->start_date, $request->end_date, $annonce->prix_par_nuit);
+        $total = Reservation::calculateTotalPrice($startDate, $endDate, $annonce->prix_par_nuit);
 
         $reservation = Reservation::create([
             'annonce_id'  => $annonce->id,
             'user_id'     => Auth::id(),
-            'start_date'  => $request->start_date,
-            'end_date'    => $request->end_date,
+            'start_date'  => $startDate->toDateString(),
+            'end_date'    => $endDate->toDateString(),
             'total_price' => $total,
             'status'      => 'pending',
         ]);
