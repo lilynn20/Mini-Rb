@@ -287,9 +287,7 @@
                                     })],
                                     dateFormat: "Y-m-d",
                                     locale: "fr",
-                                    showMonths: 2,
-                                    appendTo: document.querySelector('form'),
-                                    position: "below"
+                                    showMonths: 2
                                 });
                             </script>
                         @else
