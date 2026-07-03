@@ -263,7 +263,7 @@
                         @if(Auth::id() !== $annonce->user_id)
                             <form action="{{ route('reservations.store', $annonce->id) }}" method="POST">
                                 @csrf
-                                <div class="border rounded-lg mb-4">
+                                <div class="border rounded-lg mb-4 relative">
                                     <div class="grid grid-cols-2 border-b">
                                         <div class="p-3 border-r">
                                             <label class="block text-[10px] font-bold uppercase">Arrivée</label>
@@ -288,7 +288,8 @@
                                     dateFormat: "Y-m-d",
                                     locale: "fr",
                                     showMonths: 2,
-                                    static: false
+                                    appendTo: document.querySelector('form'),
+                                    position: "below"
                                 });
                             </script>
                         @else
