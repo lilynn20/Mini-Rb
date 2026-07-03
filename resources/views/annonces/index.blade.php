@@ -101,6 +101,9 @@
                     startDate: '{{ request('start_date') }}',
                     endDate: '{{ request('end_date') }}',
                     nights: 0,
+                    init() {
+                        this.updateNights();
+                    },
                     updateNights() {
                         if (this.startDate && this.endDate && this.endDate > this.startDate) {
                             const start = new Date(this.startDate);
@@ -112,11 +115,15 @@
                     },
                     getMinEndDate() {
                         if (!this.startDate) return '{{ date('Y-m-d', strtotime('+1 day')) }}';
-                        const date = new Date(this.startDate);
+                        const parts = this.startDate.split('-');
+                        const date = new Date(parts[0], parts[1] - 1, parts[2]);
                         date.setDate(date.getDate() + 1);
-                        return date.toISOString().split('T')[0];
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return year + '-' + month + '-' + day;
                     }
-                }">
+                }" @init="init()">
                     <form action="{{ route('home') }}" method="GET" class="flex w-full items-center gap-2">
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Destination</label>
@@ -128,7 +135,7 @@
                         </div>
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Départ <span x-show="nights > 0" class="text-rose-500 font-bold">(<span x-text="nights"></span> nuit<span x-show="nights > 1">s</span>)</span></label>
-                            <input type="date" name="end_date" x-model="endDate" @change="updateNights()" :min="getMinEndDate()" class="w-full outline-none text-sm font-medium">
+                            <input type="date" name="end_date" x-model="endDate" @change="updateNights()" @input="$el.min = getMinEndDate()" :min="getMinEndDate()" class="w-full outline-none text-sm font-medium">
                         </div>
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Budget Max (DH)</label>
