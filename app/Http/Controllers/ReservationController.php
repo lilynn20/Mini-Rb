@@ -149,7 +149,6 @@ class ReservationController extends Controller
             abort(403, 'Le reçu n\'est disponible que pour les réservations confirmées');
         }
 
-        $pdf = Pdf::view('receipts.reservation', compact('reservation'));
-        return $pdf->download("receipt-{$reservation->id}.pdf");
+        return Pdf::loadView('receipts.reservation', compact('reservation'))->download("receipt-{$reservation->id}.pdf");
     }
 }

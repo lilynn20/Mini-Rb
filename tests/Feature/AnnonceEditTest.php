@@ -42,7 +42,7 @@ class AnnonceEditTest extends TestCase
         Storage::fake('s3');
 
         $owner = User::factory()->create(['role' => 'user']);
-        $annonce = Annonce::factory()->create(['user_id' => $owner->id, 'image' => null]);
+        $annonce = Annonce::factory()->create(['user_id' => $owner->id]);
 
         $file = UploadedFile::fake()->image('maison.jpg')->size(1200); // 1.2 MB, well under limit
 
@@ -53,12 +53,12 @@ class AnnonceEditTest extends TestCase
             'ville'              => $annonce->ville,
             'prix_par_nuit'      => $annonce->prix_par_nuit,
             'nombre_de_chambres' => $annonce->nombre_de_chambres,
-            'image'              => $file,
+            'images'             => [$file],
         ])->assertRedirect();
 
-        $newPath = $annonce->fresh()->image;
-        $this->assertNotNull($newPath, 'image should be updated');
-        Storage::disk('s3')->assertExists($newPath);
+        $newImage = $annonce->fresh()->images->last();
+        $this->assertNotNull($newImage, 'image should be created');
+        Storage::disk('s3')->assertExists($newImage->image_path);
     }
 
     #[Test]
@@ -80,11 +80,11 @@ class AnnonceEditTest extends TestCase
                 'ville'              => $annonce->ville,
                 'prix_par_nuit'      => $annonce->prix_par_nuit,
                 'nombre_de_chambres' => $annonce->nombre_de_chambres,
-                'image'              => $tooBig,
+                'images'             => [$tooBig],
             ]);
 
         $response->assertRedirect("/annonces/{$annonce->id}/edit");
-        $response->assertSessionHasErrors('image'); // error is flashed and now displayed in the form
+        $response->assertSessionHasErrors('images.0'); // error is flashed and now displayed in the form
 
         // The edit was fully rejected — title unchanged.
         $this->assertDatabaseHas('annonces', ['id' => $annonce->id, 'titre' => 'Titre original']);

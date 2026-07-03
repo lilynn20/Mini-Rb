@@ -80,14 +80,16 @@ class AnnonceController extends Controller
 
         if ($request->hasFile('images')) {
             $isPrimary = true;
+            $sortOrder = 0;
             foreach ($request->file('images') as $image) {
                 $path = $image->store('annonces', 's3');
                 $annonce->images()->create([
                     'image_path' => $path,
                     'is_primary' => $isPrimary,
-                    'sort_order' => $annonce->images->count(),
+                    'sort_order' => $sortOrder,
                 ]);
                 $isPrimary = false;
+                $sortOrder++;
             }
         }
 

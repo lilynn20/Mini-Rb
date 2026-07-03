@@ -134,32 +134,19 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             @forelse($annonces as $annonce)
-                <div class="group">
-                    <a href="{{ route('annonces.show', $annonce) }}" class="block">
-                        <div class="aspect-square overflow-hidden rounded-xl mb-3 relative">
-                            @php
-                                if($annonce->images->count()) {
-                                    $imgUrl = \Storage::disk('s3')->url($annonce->images->where('is_primary', true)->first()->image_path ?? $annonce->images->first()->image_path);
-                                } else {
-                                    $imgUrl = $annonce->image
-                                        ? (\Illuminate\Support\Str::startsWith($annonce->image, 'http') ? $annonce->image : \Storage::disk('s3')->url($annonce->image))
-                                        : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80&fit=crop';
-                                }
-                            @endphp
-                            <img src="{{ $imgUrl }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-
-                            @auth
-                                @if(Auth::id() !== $annonce->user_id)
-                                    <form action="{{ route('favorites.toggle', $annonce->id) }}" method="POST" class="absolute top-2 right-2 z-10" onclick="event.stopPropagation()">
-                                        @csrf
-                                        <button type="submit" class="p-2 bg-white rounded-full shadow hover:bg-rose-50 transition">
-                                            <svg class="w-5 h-5 {{ Auth::user()->favorites()->where('annonce_id', $annonce->id)->exists() ? 'fill-rose-500 text-rose-500' : 'text-gray-400' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                            </button>
-                        </form>
-                        @endif
-                    @endauth
-                        </div>
-                    </a>
+                <a href="{{ route('annonces.show', $annonce) }}" class="group block">
+                    <div class="aspect-square overflow-hidden rounded-xl mb-3 relative">
+                        @php
+                            if($annonce->images->count()) {
+                                $imgUrl = \Storage::disk('s3')->url($annonce->images->where('is_primary', true)->first()->image_path ?? $annonce->images->first()->image_path);
+                            } else {
+                                $imgUrl = $annonce->image
+                                    ? (\Illuminate\Support\Str::startsWith($annonce->image, 'http') ? $annonce->image : \Storage::disk('s3')->url($annonce->image))
+                                    : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80&fit=crop';
+                            }
+                        @endphp
+                        <img src="{{ $imgUrl }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
                     <h3 class="font-bold text-gray-900">{{ $annonce->ville }}</h3>
                     <p class="text-gray-500 text-sm truncate">{{ $annonce->titre }}</p>
                     @if($annonce->amenities->count())
@@ -171,7 +158,6 @@
                     @endif
                     <p class="mt-2 font-semibold"><span class="text-gray-900">{{ $annonce->prix_par_nuit }} DH</span> <span class="text-gray-500 font-normal">par nuit</span></p>
 
-                    <!-- Note et bouton détails -->
                     <div class="mt-2 flex items-center justify-between">
                         <div class="flex items-center text-sm">
                             <svg class="w-4 h-4 text-yellow-400 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -182,6 +168,16 @@
                         <span class="bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase group-hover:bg-rose-600 transition shadow-sm">Détails</span>
                     </div>
                 </a>
+                @auth
+                    @if(Auth::id() !== $annonce->user_id)
+                        <form action="{{ route('favorites.toggle', $annonce->id) }}" method="POST" class="absolute -mt-96 mr-2 z-10" style="margin-left: calc(100% - 42px);" onclick="event.stopPropagation()">
+                            @csrf
+                            <button type="submit" class="p-2 bg-white rounded-full shadow hover:bg-rose-50 transition">
+                                <svg class="w-5 h-5 {{ Auth::user()->favorites()->where('annonce_id', $annonce->id)->exists() ? 'fill-rose-500 text-rose-500' : 'text-gray-400' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            </button>
+                        </form>
+                    @endif
+                @endauth
             @empty
                 <p class="text-gray-500 col-span-full text-center py-10">Aucune annonce disponible pour le moment.</p>
             @endforelse

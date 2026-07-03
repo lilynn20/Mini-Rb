@@ -66,17 +66,15 @@ class FavoritesTest extends TestCase
     }
 
     #[Test]
-    public function non_owner_cannot_toggle_own_annonce_as_favorite()
+    public function owner_cannot_toggle_own_annonce_as_favorite()
     {
         $user = User::factory()->create(['role' => 'user']);
         $annonce = Annonce::factory()->create(['user_id' => $user->id]);
 
-        $stranger = User::factory()->create(['role' => 'user']);
-
-        $this->actingAs($stranger)->post(route('favorites.toggle', $annonce), [])
+        $this->actingAs($user)->post(route('favorites.toggle', $annonce), [])
             ->assertRedirect();
 
-        $this->assertFalse($stranger->favorites()->where('annonce_id', $annonce->id)->exists());
+        $this->assertFalse($user->favorites()->where('annonce_id', $annonce->id)->exists());
     }
 
     #[Test]

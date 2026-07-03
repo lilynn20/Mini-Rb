@@ -21,6 +21,15 @@ class Annonce extends Model
         'nombre_de_chambres'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($annonce) {
+            $annonce->images()->each(fn($image) => $image->delete());
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

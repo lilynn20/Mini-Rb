@@ -101,7 +101,6 @@ class MultiImageTest extends TestCase
         Storage::fake('s3');
 
         $owner = User::factory()->create(['role' => 'user']);
-        $annonce = Annonce::factory()->create(['user_id' => $owner->id]);
 
         $this->actingAs($owner)->post('/annonces', [
             'titre' => 'Test',
@@ -113,12 +112,12 @@ class MultiImageTest extends TestCase
             'images' => [UploadedFile::fake()->image('test.jpg')->size(1200)],
         ]);
 
-        $annonce = Annonce::latest()->first();
+        $annonce = Annonce::latest()->first()->load('images');
         $imagePath = $annonce->images->first()->image_path;
 
         Storage::disk('s3')->assertExists($imagePath);
 
-        $this->actingAs($owner)->delete("/annonces/{$annonce->id}");
+        $this->delete("/annonces/{$annonce->id}");
 
         Storage::disk('s3')->assertMissing($imagePath);
     }
