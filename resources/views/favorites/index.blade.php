@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-50">
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b sticky top-0 z-50">
+    <nav class="bg-white shadow-sm py-3 sm:py-4 px-4 sm:px-8 flex justify-between items-center border-b sticky top-0 z-50">
         <div class="flex items-center space-x-8">
             <a href="{{ route('home') }}" class="flex items-center space-x-2 text-rose-500 hover:text-rose-600 transition">
                 <img src="{{ asset('images/logo.png') }}" class="h-8 w-8" alt="Mini-Rb Logo">
@@ -18,9 +18,10 @@
 
         <div class="flex items-center space-x-4">
             @auth
-                @if(Auth::user()->role === 'admin')
+                @if(Auth::user()->isAdmin())
                     <a href="{{ route('admin.index') }}" class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold hover:bg-purple-200 transition">Dashboard Admin</a>
                 @endif
+                <a href="{{ route('favorites.index') }}" class="text-rose-500 font-semibold hover:text-rose-600 transition">❤️ Favoris</a>
                 <a href="{{ route('reservations.index') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Mes Réservations</a>
                 <a href="{{ route('annonces.create') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">Publier</a>
                 <span class="text-gray-400">|</span>
@@ -34,17 +35,17 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-8 py-10">
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
         @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
                 {{ session('success') }}
             </div>
         @endif
 
-        <h1 class="text-3xl font-bold mb-8">Mes Favoris</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">❤️ Mes Favoris</h1>
 
         @if($favorites->count())
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 mb-12">
                 @foreach($favorites as $annonce)
                     <div class="group">
                         <a href="{{ route('annonces.show', $annonce) }}" class="block">
@@ -68,8 +69,8 @@
                                 </form>
                             </div>
                         </a>
-                        <h3 class="font-bold text-gray-900">{{ $annonce->ville }}</h3>
-                        <p class="text-gray-500 text-sm truncate">{{ $annonce->titre }}</p>
+                        <h3 class="font-bold text-gray-900 text-sm sm:text-base">{{ $annonce->ville }}</h3>
+                        <p class="text-gray-500 text-xs sm:text-sm truncate">{{ $annonce->titre }}</p>
                         @if($annonce->amenities->count())
                             <div class="flex gap-1 mt-1 flex-wrap">
                                 @foreach($annonce->amenities->take(2) as $amenity)
@@ -77,20 +78,20 @@
                                 @endforeach
                             </div>
                         @endif
-                        <p class="mt-2 font-semibold"><span class="text-gray-900">{{ $annonce->prix_par_nuit }} DH</span> <span class="text-gray-500 font-normal">par nuit</span></p>
+                        <p class="mt-2 font-semibold text-sm sm:text-base"><span class="text-gray-900">{{ $annonce->prix_par_nuit }} DH</span> <span class="text-gray-500 font-normal">par nuit</span></p>
                     </div>
                 @endforeach
             </div>
 
-            <div class="mt-12">
+            <div class="mt-8 sm:mt-12">
                 {{ $favorites->links() }}
             </div>
         @else
-            <div class="text-center py-20">
-                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="text-center py-12 sm:py-20">
+                <svg class="w-12 sm:w-16 h-12 sm:h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
-                <p class="text-gray-500 text-lg">Aucun favori pour le moment</p>
+                <p class="text-gray-500 text-base sm:text-lg">Aucun favori pour le moment</p>
                 <a href="{{ route('home') }}" class="inline-block mt-4 text-rose-500 hover:text-rose-600 font-semibold">Découvrir des annonces</a>
             </div>
         @endif
