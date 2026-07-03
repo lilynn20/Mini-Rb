@@ -7,6 +7,7 @@ use App\Models\Amenity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AnnonceController extends Controller
@@ -15,7 +16,7 @@ class AnnonceController extends Controller
 
     public function index(Request $request)
     {
-        $query = Annonce::latest();
+        $query = Annonce::with(['images', 'amenities'])->latest();
 
         if ($request->filled('ville')) {
             $query->where('ville', 'like', '%' . $request->ville . '%');
@@ -51,13 +52,13 @@ class AnnonceController extends Controller
         }
 
         $annonces = $query->paginate(9)->withQueryString();
-        $amenities = Amenity::all();
+        $amenities = Cache::remember('amenities_list', 3600, fn() => Amenity::all());
         return view('annonces.index', compact('annonces', 'amenities'));
     }
 
     public function create()
     {
-        $amenities = Amenity::all();
+        $amenities = Cache::remember('amenities_list', 3600, fn() => Amenity::all());
         return view('annonces.create', compact('amenities'));
     }
 
@@ -118,7 +119,7 @@ class AnnonceController extends Controller
     public function edit(Annonce $annonce)
     {
         $this->authorize('update', $annonce);
-        $amenities = Amenity::all();
+        $amenities = Cache::remember('amenities_list', 3600, fn() => Amenity::all());
         return view('annonces.edit', compact('annonce', 'amenities'));
     }
 

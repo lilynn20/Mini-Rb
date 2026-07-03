@@ -36,7 +36,7 @@ class FavoriteController extends Controller
     public function index(Request $request)
     {
         $favorites = Auth::user()->favorites()
-            ->with('amenities')
+            ->with(['images', 'amenities'])
             ->latest('favorites.created_at')
             ->paginate(12)
             ->withQueryString();
