@@ -6,6 +6,9 @@
     <title>{{ $annonce->titre }} - Mini-Rb</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/rangePlugin.js"></script>
 </head>
 <body class="bg-white">
     <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b sticky top-0 z-50">
@@ -264,16 +267,26 @@
                                     <div class="grid grid-cols-2 border-b">
                                         <div class="p-3 border-r">
                                             <label class="block text-[10px] font-bold uppercase">Arrivée</label>
-                                            <input type="date" name="start_date" min="{{ date('Y-m-d') }}" class="w-full text-sm outline-none" required>
+                                            <input type="date" id="start_date" name="start_date" class="w-full text-sm outline-none" required>
                                         </div>
                                         <div class="p-3">
                                             <label class="block text-[10px] font-bold uppercase">Départ</label>
-                                            <input type="date" name="end_date" min="{{ date('Y-m-d', strtotime('+1 day')) }}" class="w-full text-sm outline-none" required>
+                                            <input type="date" id="end_date" name="end_date" class="w-full text-sm outline-none" required>
                                         </div>
                                     </div>
                                 </div>
                                 <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg font-bold hover:bg-rose-600 transition">Réserver</button>
                             </form>
+                            <script>
+                                flatpickr("#start_date", {
+                                    mode: "range",
+                                    minDate: "today",
+                                    disable: @json($blockedDates),
+                                    plugins: [new rangePlugin({ input: "#end_date" })],
+                                    dateFormat: "Y-m-d",
+                                    locale: "fr"
+                                });
+                            </script>
                         @else
                             <div class="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
                                 C'est votre annonce
