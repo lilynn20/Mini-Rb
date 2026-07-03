@@ -112,16 +112,16 @@
         </div>
 
         @if($annonce->images->count())
-            <div class="rounded-2xl overflow-hidden mb-10 h-[500px]" x-data="{ currentImage: 0, images: {{ json_encode($annonce->images->pluck('image_path')) }} }">
+            <div class="rounded-2xl overflow-hidden mb-10 h-[500px] relative" x-data="{ currentImage: 0, images: {{ json_encode($annonce->images->pluck('image_path')) }} }">
                 <img :src="'{{ \Config::get('filesystems.disks.s3.url') }}/' + images[currentImage]" :alt="'Image ' + (currentImage + 1)" class="w-full h-full object-cover">
                 @if($annonce->images->count() > 1)
-                    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
                         <template x-for="(img, index) in images">
                             <button @click="currentImage = index" class="w-2 h-2 rounded-full transition" :class="currentImage === index ? 'bg-rose-500' : 'bg-white'"></button>
                         </template>
                     </div>
-                    <button @click="currentImage = (currentImage - 1 + images.length) % images.length" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-full hover:bg-gray-100">←</button>
-                    <button @click="currentImage = (currentImage + 1) % images.length" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-full hover:bg-gray-100">→</button>
+                    <button @click="currentImage = (currentImage - 1 + images.length) % images.length" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-full hover:bg-gray-100 z-10">←</button>
+                    <button @click="currentImage = (currentImage + 1) % images.length" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-full hover:bg-gray-100 z-10">→</button>
                 @endif
             </div>
         @else
