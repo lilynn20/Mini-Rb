@@ -11,11 +11,20 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->get();
-        $annonces = Annonce::with('user')->latest()->get();
-        $reservations = Reservation::with(['user', 'annonce'])->latest()->get();
+        $users = User::latest()->paginate(10);
+        $annonces = Annonce::with('user')->latest()->paginate(10);
+        $reservations = Reservation::with(['user', 'annonce'])->latest()->paginate(10);
 
-        return view('admin.index', compact('users', 'annonces', 'reservations'));
+        $stats = [
+            'totalUsers' => User::count(),
+            'totalAnnonces' => Annonce::count(),
+            'totalReservations' => Reservation::count(),
+            'acceptedReservations' => Reservation::where('status', 'accepted')->count(),
+            'pendingReservations' => Reservation::where('status', 'pending')->count(),
+            'totalRevenue' => Reservation::where('status', 'accepted')->sum('total_price'),
+        ];
+
+        return view('admin.index', compact('users', 'annonces', 'reservations', 'stats'));
     }
 
     public function deleteUser($id)

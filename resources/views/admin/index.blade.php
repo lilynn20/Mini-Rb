@@ -7,22 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b">
+    <nav class="bg-white shadow-sm py-3 sm:py-4 px-4 sm:px-8 flex justify-between items-center border-b sticky top-0 z-50">
         <a href="{{ route('home') }}" class="flex items-center space-x-2 text-rose-500 hover:text-rose-600 transition">
             <img src="{{ asset('images/logo.png') }}" class="h-8 w-8" alt="Mini-Rb Logo">
             <span class="font-bold text-2xl tracking-tighter">Mini-Rb</span>
         </a>
-        <div class="flex items-center space-x-4">
-            <span class="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-sm font-semibold">Admin</span>
-            <a href="{{ route('profile') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition">{{ Auth::user()->name }}</a>
+        <div class="flex items-center space-x-2 sm:space-x-4">
+            <span class="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold">Admin</span>
+            <a href="{{ route('profile') }}" class="text-gray-700 font-semibold hover:text-rose-500 transition text-sm sm:text-base">{{ Auth::user()->name }}</a>
             <form action="{{ route('logout') }}" method="POST" class="inline">
                 @csrf
-                <button type="submit" class="text-gray-500 hover:text-rose-500 font-semibold text-sm">Déconnexion</button>
+                <button type="submit" class="text-gray-500 hover:text-rose-500 font-semibold text-xs sm:text-sm">Déconnexion</button>
             </form>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-8 py-10">
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
 
         @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
@@ -37,18 +37,30 @@
         @endif
 
         {{-- Stats --}}
-        <div class="grid grid-cols-3 gap-6 mb-10">
-            <div class="bg-white rounded-2xl p-6 shadow-sm border text-center">
-                <p class="text-4xl font-bold text-rose-500">{{ $users->count() }}</p>
-                <p class="text-gray-500 mt-1">Utilisateurs</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10">
+            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
+                <p class="text-3xl sm:text-4xl font-bold text-rose-500">{{ $stats['totalUsers'] }}</p>
+                <p class="text-gray-500 mt-1 text-sm sm:text-base">Utilisateurs</p>
             </div>
-            <div class="bg-white rounded-2xl p-6 shadow-sm border text-center">
-                <p class="text-4xl font-bold text-rose-500">{{ $annonces->count() }}</p>
-                <p class="text-gray-500 mt-1">Annonces</p>
+            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
+                <p class="text-3xl sm:text-4xl font-bold text-blue-500">{{ $stats['totalAnnonces'] }}</p>
+                <p class="text-gray-500 mt-1 text-sm sm:text-base">Annonces</p>
             </div>
-            <div class="bg-white rounded-2xl p-6 shadow-sm border text-center">
-                <p class="text-4xl font-bold text-rose-500">{{ $reservations->count() }}</p>
-                <p class="text-gray-500 mt-1">Réservations</p>
+            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
+                <p class="text-3xl sm:text-4xl font-bold text-green-500">{{ $stats['totalReservations'] }}</p>
+                <p class="text-gray-500 mt-1 text-sm sm:text-base">Réservations totales</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
+                <p class="text-3xl sm:text-4xl font-bold text-yellow-500">{{ $stats['pendingReservations'] }}</p>
+                <p class="text-gray-500 mt-1 text-sm sm:text-base">En attente</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
+                <p class="text-3xl sm:text-4xl font-bold text-emerald-500">{{ $stats['acceptedReservations'] }}</p>
+                <p class="text-gray-500 mt-1 text-sm sm:text-base">Acceptées</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
+                <p class="text-3xl sm:text-4xl font-bold text-purple-500">{{ $stats['totalRevenue'] }} DH</p>
+                <p class="text-gray-500 mt-1 text-sm sm:text-base">Chiffre d'affaires</p>
             </div>
         </div>
 
@@ -99,6 +111,11 @@
                     </tbody>
                 </table>
             </div>
+            @if($users->hasPages())
+                <div class="px-6 py-4 border-t bg-gray-50">
+                    {{ $users->links() }}
+                </div>
+            @endif
         </div>
 
         {{-- Annonces --}}
@@ -141,6 +158,11 @@
                     </tbody>
                 </table>
             </div>
+            @if($annonces->hasPages())
+                <div class="px-6 py-4 border-t bg-gray-50">
+                    {{ $annonces->links() }}
+                </div>
+            @endif
         </div>
 
         {{-- Reservations --}}
@@ -193,11 +215,16 @@
                     </tbody>
                 </table>
             </div>
+            @if($reservations->hasPages())
+                <div class="px-6 py-4 border-t bg-gray-50">
+                    {{ $reservations->links() }}
+                </div>
+            @endif
         </div>
 
     </main>
 
-    <footer class="bg-gray-100 border-t py-10 px-8 text-center text-gray-500 mt-20">
+    <footer class="bg-gray-100 border-t py-8 sm:py-10 px-4 sm:px-8 text-center text-gray-500 mt-12 sm:mt-20">
         <p>&copy; 2026 Mini-Rb, by Imane & Naima.</p>
     </footer>
 </body>
