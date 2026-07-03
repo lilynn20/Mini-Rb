@@ -276,11 +276,11 @@
                                     <div class="grid grid-cols-2 border-b">
                                         <div class="p-3 border-r">
                                             <label class="block text-[10px] font-bold uppercase">Arrivée</label>
-                                            <input type="date" id="start_date" name="start_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required>
+                                            <input type="text" id="start_date" name="start_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required>
                                         </div>
                                         <div class="p-3">
                                             <label class="block text-[10px] font-bold uppercase">Départ</label>
-                                            <input type="date" id="end_date" name="end_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required>
+                                            <input type="text" id="end_date" name="end_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required>
                                         </div>
                                     </div>
                                 </div>
@@ -288,15 +288,12 @@
                             </form>
                             <script>
                                 flatpickr("#start_date", {
-                                    mode: "range",
+                                    dateFormat: "Y-m-d",
                                     minDate: "today",
-                                    disable: @json($blockedDates),
+                                    disable: @json($blockedDates ?? []),
                                     plugins: [new rangePlugin({
                                         input: "#end_date"
-                                    })],
-                                    dateFormat: "d/m/Y",
-                                    locale: "fr",
-                                    showMonths: 2
+                                    })]
                                 });
                             </script>
                         @else
