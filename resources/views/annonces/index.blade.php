@@ -109,8 +109,14 @@
                         } else {
                             this.nights = 0;
                         }
+                    },
+                    getMinEndDate() {
+                        if (!this.startDate) return '{{ date('Y-m-d', strtotime('+1 day')) }}';
+                        const date = new Date(this.startDate);
+                        date.setDate(date.getDate() + 1);
+                        return date.toISOString().split('T')[0];
                     }
-                }" @change="updateNights()" @input="updateNights()">
+                }">
                     <form action="{{ route('home') }}" method="GET" class="flex w-full items-center gap-2">
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Destination</label>
@@ -118,11 +124,11 @@
                         </div>
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Arrivée</label>
-                            <input type="date" name="start_date" x-model="startDate" value="{{ request('start_date') }}" min="{{ date('Y-m-d') }}" class="w-full outline-none text-sm font-medium">
+                            <input type="date" name="start_date" x-model="startDate" @change="updateNights()" min="{{ date('Y-m-d') }}" class="w-full outline-none text-sm font-medium">
                         </div>
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Départ <span x-show="nights > 0" class="text-rose-500 font-bold">(<span x-text="nights"></span> nuit<span x-show="nights > 1">s</span>)</span></label>
-                            <input type="date" name="end_date" x-model="endDate" value="{{ request('end_date') }}" :min="startDate ? new Date(new Date(startDate).getTime() + 86400000).toISOString().split('T')[0] : '{{ date('Y-m-d', strtotime('+1 day')) }}'" class="w-full outline-none text-sm font-medium">
+                            <input type="date" name="end_date" x-model="endDate" @change="updateNights()" :min="getMinEndDate()" class="w-full outline-none text-sm font-medium">
                         </div>
                         <div class="flex-1 px-6 border-r">
                             <label class="block text-[10px] font-bold uppercase text-gray-500">Budget Max (DH)</label>
