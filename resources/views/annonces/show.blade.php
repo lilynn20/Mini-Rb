@@ -267,11 +267,11 @@
                                     <div class="grid grid-cols-2 border-b">
                                         <div class="p-3 border-r">
                                             <label class="block text-[10px] font-bold uppercase">Arrivée</label>
-                                            <input type="date" id="start_date" name="start_date" class="w-full text-sm outline-none" required>
+                                            <input type="date" id="start_date" name="start_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required>
                                         </div>
                                         <div class="p-3">
                                             <label class="block text-[10px] font-bold uppercase">Départ</label>
-                                            <input type="date" id="end_date" name="end_date" class="w-full text-sm outline-none" required>
+                                            <input type="date" id="end_date" name="end_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required>
                                         </div>
                                     </div>
                                 </div>
