@@ -19,7 +19,8 @@ class FavoritesTest extends TestCase
         $annonce = Annonce::factory()->create();
 
         $this->actingAs($user)->post(route('favorites.toggle', $annonce), [])
-            ->assertRedirect();
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('isFavorited', true);
 
         $this->assertTrue($user->favorites()->where('annonce_id', $annonce->id)->exists());
     }
@@ -33,7 +34,8 @@ class FavoritesTest extends TestCase
         $user->favorites()->attach($annonce->id);
 
         $this->actingAs($user)->post(route('favorites.toggle', $annonce), [])
-            ->assertRedirect();
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('isFavorited', false);
 
         $this->assertFalse($user->favorites()->where('annonce_id', $annonce->id)->exists());
     }
@@ -72,7 +74,7 @@ class FavoritesTest extends TestCase
         $annonce = Annonce::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)->post(route('favorites.toggle', $annonce), [])
-            ->assertRedirect();
+            ->assertStatus(403);
 
         $this->assertFalse($user->favorites()->where('annonce_id', $annonce->id)->exists());
     }

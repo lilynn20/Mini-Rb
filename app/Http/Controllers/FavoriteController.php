@@ -13,10 +13,12 @@ class FavoriteController extends Controller
         $user = Auth::user();
 
         if ($user->id === $annonce->user_id) {
-            return back()->with('error', 'Vous ne pouvez pas ajouter votre propre annonce aux favoris');
+            return response()->json(['error' => 'Vous ne pouvez pas ajouter votre propre annonce aux favoris'], 403);
         }
 
-        if ($user->favorites()->where('annonce_id', $annonce->id)->exists()) {
+        $isFavorited = $user->favorites()->where('annonce_id', $annonce->id)->exists();
+
+        if ($isFavorited) {
             $user->favorites()->detach($annonce->id);
             $message = 'Annonce retirée de vos favoris';
         } else {
@@ -24,7 +26,11 @@ class FavoriteController extends Controller
             $message = 'Annonce ajoutée à vos favoris';
         }
 
-        return back()->with('success', $message);
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'isFavorited' => !$isFavorited,
+        ]);
     }
 
     public function index(Request $request)

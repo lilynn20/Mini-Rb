@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini-Rb - Airbnb Clone</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body class="bg-gray-50">
     <!-- Navbar -->
@@ -171,12 +172,18 @@
                     </a>
                     @auth
                         @if(Auth::id() !== $annonce->user_id)
-                            <form action="{{ route('favorites.toggle', $annonce->id) }}" method="POST" class="absolute top-3 left-3 z-10" onclick="event.stopPropagation()">
-                                @csrf
-                                <button type="submit" class="p-1.5 bg-white rounded-full shadow hover:bg-rose-50 transition">
-                                    <svg class="w-4 h-4 {{ Auth::user()->favorites()->where('annonce_id', $annonce->id)->exists() ? 'fill-rose-500 text-rose-500' : 'text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            <div x-data="{ isFavorited: {{ Auth::user()->favorites()->where('annonce_id', $annonce->id)->exists() ? 'true' : 'false' }} }" class="absolute top-3 left-3 z-10">
+                                <button @click="
+                                    $fetch('{{ route('favorites.toggle', $annonce->id) }}', {
+                                        method: 'POST',
+                                        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                                    }).then(r => r.json()).then(data => {
+                                        if (data.success) isFavorited = data.isFavorited;
+                                    });
+                                " class="p-1.5 bg-white rounded-full shadow hover:bg-rose-50 transition">
+                                    <svg class="w-4 h-4 transition" :class="isFavorited ? 'fill-rose-500 text-rose-500' : 'text-gray-300'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                                 </button>
-                            </form>
+                            </div>
                         @endif
                     @endauth
                 </div>
