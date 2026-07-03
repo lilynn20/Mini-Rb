@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Annonce;
+use App\Models\Amenity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -35,7 +36,8 @@ class AnnonceController extends Controller
 
     public function create()
     {
-        return view('annonces.create');
+        $amenities = Amenity::all();
+        return view('annonces.create', compact('amenities'));
     }
 
     public function store(Request $request)
@@ -47,15 +49,13 @@ class AnnonceController extends Controller
             'ville' => 'required|string|max:255',
             'prix_par_nuit' => 'required|numeric|min:0',
             'nombre_de_chambres' => 'required|integer|min:1',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'amenities' => 'nullable|array',
+            'amenities.*' => 'exists:amenities,id',
         ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('annonces', 's3');
-        }
-
-        Annonce::create([
+        $annonce = Annonce::create([
             'user_id' => Auth::id(),
             'titre' => $request->titre,
             'description' => $request->description,
@@ -63,8 +63,24 @@ class AnnonceController extends Controller
             'ville' => $request->ville,
             'prix_par_nuit' => $request->prix_par_nuit,
             'nombre_de_chambres' => $request->nombre_de_chambres,
-            'image' => $imagePath,
         ]);
+
+        if ($request->hasFile('images')) {
+            $isPrimary = true;
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('annonces', 's3');
+                $annonce->images()->create([
+                    'image_path' => $path,
+                    'is_primary' => $isPrimary,
+                    'sort_order' => $annonce->images->count(),
+                ]);
+                $isPrimary = false;
+            }
+        }
+
+        if ($request->filled('amenities')) {
+            $annonce->amenities()->sync($request->amenities);
+        }
 
         return redirect()->route('home')->with('success', 'Annonce publiée avec succès !');
     }
@@ -78,7 +94,8 @@ class AnnonceController extends Controller
     public function edit(Annonce $annonce)
     {
         $this->authorize('update', $annonce);
-        return view('annonces.edit', compact('annonce'));
+        $amenities = Amenity::all();
+        return view('annonces.edit', compact('annonce', 'amenities'));
     }
 
     public function update(Request $request, Annonce $annonce)
@@ -92,26 +109,38 @@ class AnnonceController extends Controller
             'ville' => 'required|string|max:255',
             'prix_par_nuit' => 'required|numeric|min:0',
             'nombre_de_chambres' => 'required|integer|min:1',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'amenities' => 'nullable|array',
+            'amenities.*' => 'exists:amenities,id',
         ]);
 
-        $data = [
+        $annonce->update([
             'titre' => $request->titre,
             'description' => $request->description,
             'adresse' => $request->adresse,
             'ville' => $request->ville,
             'prix_par_nuit' => $request->prix_par_nuit,
             'nombre_de_chambres' => $request->nombre_de_chambres,
-        ];
+        ]);
 
-        if ($request->hasFile('image')) {
-            if ($annonce->image) {
-                Storage::disk('s3')->delete($annonce->image);
+        if ($request->hasFile('images')) {
+            $sortOrder = $annonce->images->max('sort_order') ?? 0;
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('annonces', 's3');
+                $annonce->images()->create([
+                    'image_path' => $path,
+                    'is_primary' => false,
+                    'sort_order' => ++$sortOrder,
+                ]);
             }
-            $data['image'] = $request->file('image')->store('annonces', 's3');
         }
 
-        $annonce->update($data);
+        if ($request->filled('amenities')) {
+            $annonce->amenities()->sync($request->amenities);
+        } else {
+            $annonce->amenities()->detach();
+        }
 
         return redirect()->route('annonces.show', $annonce)->with('success', 'Annonce mise à jour !');
     }

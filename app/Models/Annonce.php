@@ -30,4 +30,31 @@ class Annonce extends Model
     {
         return $this->hasMany(Reservation::class);
     }
+
+    public function images()
+    {
+        return $this->hasMany(AnnonceImage::class)->orderBy('sort_order');
+    }
+
+    public function amenities()
+    {
+        return $this->belongsToMany(Amenity::class, 'annonce_amenity');
+    }
+
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+    }
+
+    public function getDisplayImage()
+    {
+        return $this->images->where('is_primary', true)->first()
+            ?? $this->images->first()
+            ?? ($this->image ? $this->image : null);
+    }
+
+    public function isFavoritedBy(User $user): bool
+    {
+        return $this->favoritedBy()->where('user_id', $user->id)->exists();
+    }
 }

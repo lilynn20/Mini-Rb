@@ -67,9 +67,21 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-1">Image du logement</label>
-                    <input type="file" name="image" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" accept="image/*">
-                    <p class="text-xs text-gray-500 mt-1">Sélectionnez une image de votre logement (JPEG, PNG, etc.).</p>
+                    <label class="block text-gray-700 font-semibold mb-1">Images du logement</label>
+                    <input type="file" name="images[]" multiple accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none">
+                    <p class="text-xs text-gray-500 mt-1">Vous pouvez télécharger plusieurs images (JPEG, PNG, etc., max 5MB chacune).</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-3">Équipements</label>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        @foreach($amenities as $amenity)
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="amenities[]" value="{{ $amenity->id }}" class="rounded">
+                                <span class="ml-2 text-gray-700">{{ $amenity->icon }} {{ $amenity->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 

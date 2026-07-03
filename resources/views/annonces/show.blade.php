@@ -86,17 +86,45 @@
             </div>
         @endif
 
-        <h1 class="text-3xl font-bold mb-4">{{ $annonce->titre }}</h1>
-        <p class="text-gray-600 mb-6 underline font-semibold">{{ $annonce->adresse }}, {{ $annonce->ville }}</p>
-
-        <div class="rounded-2xl overflow-hidden mb-10 h-[500px]">
-            @php
-                $imgUrl = $annonce->image
-                    ? (\Illuminate\Support\Str::startsWith($annonce->image, 'http') ? $annonce->image : \Storage::disk('s3')->url($annonce->image))
-                    : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80&fit=crop';
-            @endphp
-            <img src="{{ $imgUrl }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover">
+        <h1 class="text-3xl font-bold mb-2">{{ $annonce->titre }}</h1>
+        <div class="flex justify-between items-start mb-6">
+            <p class="text-gray-600 underline font-semibold">{{ $annonce->adresse }}, {{ $annonce->ville }}</p>
+            @auth
+                @if(Auth::id() !== $annonce->user_id)
+                    <form action="{{ route('favorites.toggle', $annonce->id) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="flex items-center space-x-2 px-4 py-2 border rounded-lg hover:bg-rose-50 transition">
+                            <svg class="w-5 h-5 {{ Auth::user()->favorites()->where('annonce_id', $annonce->id)->exists() ? 'fill-rose-500 text-rose-500' : 'text-gray-400' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            <span>{{ Auth::user()->favorites()->where('annonce_id', $annonce->id)->exists() ? 'Retirer' : 'Ajouter' }} à favoris</span>
+                        </button>
+                    </form>
+                @endif
+            @endauth
         </div>
+
+        @if($annonce->images->count())
+            <div class="rounded-2xl overflow-hidden mb-10 h-[500px]" x-data="{ currentImage: 0, images: {{ json_encode($annonce->images->pluck('image_path')) }} }">
+                <img :src="'{{ \Config::get('filesystems.disks.s3.url') }}/' + images[currentImage]" :alt="'Image ' + (currentImage + 1)" class="w-full h-full object-cover">
+                @if($annonce->images->count() > 1)
+                    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                        <template x-for="(img, index) in images">
+                            <button @click="currentImage = index" class="w-2 h-2 rounded-full transition" :class="currentImage === index ? 'bg-rose-500' : 'bg-white'"></button>
+                        </template>
+                    </div>
+                    <button @click="currentImage = (currentImage - 1 + images.length) % images.length" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-full hover:bg-gray-100">←</button>
+                    <button @click="currentImage = (currentImage + 1) % images.length" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white px-3 py-2 rounded-full hover:bg-gray-100">→</button>
+                @endif
+            </div>
+        @else
+            <div class="rounded-2xl overflow-hidden mb-10 h-[500px]">
+                @php
+                    $imgUrl = $annonce->image
+                        ? (\Illuminate\Support\Str::startsWith($annonce->image, 'http') ? $annonce->image : \Storage::disk('s3')->url($annonce->image))
+                        : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80&fit=crop';
+                @endphp
+                <img src="{{ $imgUrl }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover">
+            </div>
+        @endif
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div class="md:col-span-2">
@@ -117,6 +145,20 @@
 
                 <h3 class="text-xl font-bold mb-4">À propos de ce logement</h3>
                 <p class="text-gray-700 leading-relaxed mb-10">{{ $annonce->description }}</p>
+
+                @if($annonce->amenities->count())
+                    <div class="mb-10">
+                        <h3 class="text-xl font-bold mb-6">Équipements</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                            @foreach($annonce->amenities as $amenity)
+                                <div class="flex items-center">
+                                    <span class="text-3xl mr-3">{{ $amenity->icon }}</span>
+                                    <span class="text-gray-700">{{ $amenity->name }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
                 {{-- Reviews Section --}}
                 <div class="border-t pt-8">

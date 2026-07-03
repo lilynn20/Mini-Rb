@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\AvisController;
+use App\Http\Controllers\FavoriteController;
 
 Route::get('/', [AnnonceController::class, 'index'])->name('home');
 
@@ -54,6 +55,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Avis (reviews)
     Route::post('/reservations/{id}/avis', [AvisController::class, 'store'])->name('avis.store');
     Route::delete('/avis/{id}', [AvisController::class, 'destroy'])->name('avis.destroy');
+
+    // Favorites
+    Route::post('/favorites/{annonce}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 
     // Admin dashboard
     Route::middleware('admin')->group(function () {

@@ -68,12 +68,36 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-1">Image du logement (laisser vide pour conserver l'actuelle)</label>
-                    <input type="file" name="image" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none" accept="image/*">
-                    @if($annonce->image)
-                        <p class="text-xs text-gray-500 mt-2 text-center">Image actuelle :</p>
-                        <img src="{{ Storage::disk('s3')->url($annonce->image) }}" class="h-20 mx-auto rounded mt-1">
+                    <label class="block text-gray-700 font-semibold mb-1">Ajouter des images</label>
+                    <input type="file" name="images[]" multiple accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 outline-none">
+                    <p class="text-xs text-gray-500 mt-2">Vous pouvez ajouter plus d'images (JPEG, PNG, etc., max 5MB chacune).</p>
+
+                    @if($annonce->images->count())
+                        <p class="text-xs text-gray-500 mt-4 font-semibold">Images actuelles :</p>
+                        <div class="flex gap-2 mt-2 flex-wrap">
+                            @foreach($annonce->images as $img)
+                                <div class="relative">
+                                    <img src="{{ Storage::disk('s3')->url($img->image_path) }}" class="h-24 w-24 object-cover rounded border" alt="Preview">
+                                    @if($img->is_primary)
+                                        <span class="text-xs bg-rose-500 text-white px-2 py-1 rounded absolute top-0 left-0">Principale</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
                     @endif
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-3">Équipements</label>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        @foreach($amenities as $amenity)
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" name="amenities[]" value="{{ $amenity->id }}" class="rounded"
+                                    {{ $annonce->amenities->contains('id', $amenity->id) ? 'checked' : '' }}>
+                                <span class="ml-2 text-gray-700">{{ $amenity->icon }} {{ $amenity->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
