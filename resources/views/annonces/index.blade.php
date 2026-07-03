@@ -174,7 +174,7 @@
                                         : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80&fit=crop';
                                 }
                             @endphp
-                            <img src="{{ $imgUrl }}" alt="{{ $annonce->titre }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <img src="{{ $imgUrl }}" alt="{{ $annonce->titre }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         </div>
                         <h3 class="font-bold text-gray-900">{{ $annonce->ville }}</h3>
                         <p class="text-gray-500 text-sm truncate">{{ $annonce->titre }}</p>
