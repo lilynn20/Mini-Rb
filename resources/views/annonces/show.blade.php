@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/rangePlugin.js"></script>
 </head>
 <body class="bg-white">
-    <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b sticky top-0 z-50">
+    <nav class="bg-white shadow-sm py-3 sm:py-4 px-4 sm:px-8 flex justify-between items-center border-b sticky top-0 z-50">
         <div class="flex items-center space-x-8">
             <a href="{{ route('home') }}" class="flex items-center space-x-2 text-rose-500 hover:text-rose-600 transition">
                 <img src="{{ asset('images/logo.png') }}" class="h-8 w-8" alt="Mini-Rb Logo">
@@ -67,7 +67,7 @@
         </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto px-8 py-10">
+    <main class="max-w-5xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
 
         @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
@@ -89,13 +89,13 @@
             </div>
         @endif
 
-        <div class="mb-8">
-            <div class="flex justify-between items-start">
+        <div class="mb-6 sm:mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
                 <div>
-                    <h1 class="text-4xl font-bold mb-2">{{ $annonce->titre }}</h1>
-                    <p class="text-gray-600 underline font-semibold">{{ $annonce->adresse }}, {{ $annonce->ville }}</p>
+                    <h1 class="text-2xl sm:text-4xl font-bold mb-2">{{ $annonce->titre }}</h1>
+                    <p class="text-gray-600 underline font-semibold text-sm sm:text-base">{{ $annonce->adresse }}, {{ $annonce->ville }}</p>
                 </div>
-                <div class="flex flex-col gap-2 items-end">
+                <div class="flex flex-col gap-2 items-start sm:items-end w-full sm:w-auto">
                     @auth
                         @if(Auth::id() !== $annonce->user_id)
                             <div x-data="{ isFavorited: {{ Auth::user()->favorites()->where('annonce_id', $annonce->id)->exists() ? 'true' : 'false' }} }">
@@ -128,12 +128,12 @@
         </div>
 
         {{-- Two-Column Layout --}}
-        <div class="grid grid-cols-1 lg:grid-cols-[2fr_1.3fr] gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-[2fr_1.3fr] gap-6 sm:gap-12">
             {{-- LEFT COLUMN: Carousel + Description + Amenities + Reviews --}}
             <div>
                 {{-- Carousel --}}
                 @if($annonce->images->count())
-                    <div class="rounded-2xl overflow-hidden mb-10 h-[500px] relative" x-data="{ currentImage: 0, images: {{ json_encode($annonce->images->pluck('image_path')) }} }">
+                    <div class="rounded-2xl overflow-hidden mb-8 sm:mb-10 h-64 sm:h-[500px] relative" x-data="{ currentImage: 0, images: {{ json_encode($annonce->images->pluck('image_path')) }} }">
                         <img :src="'{{ \Config::get('filesystems.disks.s3.url') }}/' + images[currentImage]" :alt="'Image ' + (currentImage + 1)" class="w-full h-full object-cover">
                         @if($annonce->images->count() > 1)
                             <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
@@ -146,7 +146,7 @@
                         @endif
                     </div>
                 @else
-                    <div class="rounded-2xl overflow-hidden mb-10 h-[500px]">
+                    <div class="rounded-2xl overflow-hidden mb-8 sm:mb-10 h-64 sm:h-[500px]">
                         @php
                             $imgUrl = $annonce->image
                                 ? (\Illuminate\Support\Str::startsWith($annonce->image, 'http') ? $annonce->image : \Storage::disk('s3')->url($annonce->image))
@@ -157,17 +157,17 @@
                 @endif
 
                 {{-- Description --}}
-                <div class="mb-10">
-                    <p class="text-gray-600 mb-6 border-b pb-6">{{ $annonce->nombre_de_chambres }} chambre(s)</p>
-                    <h3 class="text-xl font-bold mb-4">À propos de ce logement</h3>
-                    <p class="text-gray-700 leading-relaxed">{{ $annonce->description }}</p>
+                <div class="mb-8 sm:mb-10">
+                    <p class="text-gray-600 mb-4 sm:mb-6 border-b pb-4 sm:pb-6 text-sm sm:text-base">{{ $annonce->nombre_de_chambres }} chambre(s)</p>
+                    <h3 class="text-lg sm:text-xl font-bold mb-4">À propos de ce logement</h3>
+                    <p class="text-gray-700 leading-relaxed text-sm sm:text-base">{{ $annonce->description }}</p>
                 </div>
 
                 {{-- Amenities --}}
                 @if($annonce->amenities->count())
-                    <div class="mb-10">
-                        <h3 class="text-xl font-bold mb-6">Équipements</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                    <div class="mb-8 sm:mb-10">
+                        <h3 class="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Équipements</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                             @foreach($annonce->amenities as $amenity)
                                 <div class="flex items-center">
                                     <span class="text-3xl mr-3">{{ $amenity->icon }}</span>
@@ -179,8 +179,8 @@
                 @endif
 
                 {{-- Reviews Section --}}
-                <div class="border-t pt-8">
-                    <h3 class="text-xl font-bold mb-6">
+                <div class="border-t pt-6 sm:pt-8">
+                    <h3 class="text-lg sm:text-xl font-bold mb-4 sm:mb-6">
                         Avis
                         @php
                             $allAvis = $annonce->reservations->flatMap->avis;
@@ -316,7 +316,7 @@
         </div>
     </main>
 
-    <footer class="bg-gray-100 border-t py-10 px-8 text-center text-gray-500 mt-20">
+    <footer class="bg-gray-100 border-t py-8 sm:py-10 px-4 sm:px-8 text-center text-gray-500 mt-12 sm:mt-20">
         <p>&copy; 2026 Mini-Rb, by Imane & Naima.</p>
     </footer>
 </body>
