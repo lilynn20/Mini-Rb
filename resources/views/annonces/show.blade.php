@@ -8,7 +8,6 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/rangePlugin.js"></script>
 </head>
 <body class="bg-white">
     <nav class="bg-white shadow-sm py-4 px-8 flex justify-between items-center border-b sticky top-0 z-50">
@@ -278,11 +277,25 @@
                                 <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg font-bold hover:bg-rose-600 transition">Réserver</button>
                             </form>
                             <script>
+                                const blockedDates = @json($blockedDates);
+
                                 flatpickr("#start_date", {
-                                    mode: "range",
                                     minDate: "today",
-                                    disable: @json($blockedDates),
-                                    plugins: [new rangePlugin({ input: "#end_date" })],
+                                    disable: blockedDates,
+                                    dateFormat: "Y-m-d",
+                                    locale: "fr",
+                                    onChange: function(selectedDates) {
+                                        if (selectedDates[0]) {
+                                            const nextDay = new Date(selectedDates[0]);
+                                            nextDay.setDate(nextDay.getDate() + 1);
+                                            endDatePicker.set('minDate', nextDay);
+                                        }
+                                    }
+                                });
+
+                                const endDatePicker = flatpickr("#end_date", {
+                                    minDate: "today",
+                                    disable: blockedDates,
                                     dateFormat: "Y-m-d",
                                     locale: "fr"
                                 });
