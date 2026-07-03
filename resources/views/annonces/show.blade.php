@@ -270,66 +270,21 @@
 
                     @auth
                         @if(Auth::id() !== $annonce->user_id)
-                            <form id="reservation-form" action="{{ route('reservations.store', $annonce->id) }}" method="POST" x-data="{
-                                startDate: '',
-                                endDate: '',
-                                nights: 0,
-                                totalPrice: 0,
-                                pricePerNight: {{ $annonce->prix_par_nuit }},
-                                showModal: false,
-                                calculateDays() {
-                                    if (this.startDate && this.endDate) {
-                                        const d1 = new Date(this.startDate);
-                                        const d2 = new Date(this.endDate);
-                                        this.nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
-                                        this.totalPrice = this.nights * this.pricePerNight;
-                                    }
-                                },
-                                submitReservation() {
-                                    this.showModal = true;
-                                }
-                            }" @submit.prevent="submitReservation()">
+                            <form action="{{ route('reservations.store', $annonce->id) }}" method="POST">
                                 @csrf
                                 <div class="border rounded-lg mb-4 relative">
                                     <div class="grid grid-cols-2 border-b">
                                         <div class="p-3 border-r">
                                             <label class="block text-[10px] font-bold uppercase">Arrivée</label>
-                                            <input type="date" id="start_date" name="start_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required x-model="startDate" @change="calculateDays()">
+                                            <input type="date" id="start_date" name="start_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required>
                                         </div>
                                         <div class="p-3">
                                             <label class="block text-[10px] font-bold uppercase">Départ</label>
-                                            <input type="date" id="end_date" name="end_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required x-model="endDate" @change="calculateDays()">
+                                            <input type="date" id="end_date" name="end_date" placeholder="dd/mm/yyyy" class="w-full text-sm outline-none" required>
                                         </div>
                                     </div>
                                 </div>
                                 <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg font-bold hover:bg-rose-600 transition">Réserver</button>
-
-                                {{-- Confirmation Modal --}}
-                                <div x-show="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @click.self="showModal = false">
-                                    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
-                                        <h3 class="text-xl font-bold mb-4">Confirmer votre réservation</h3>
-                                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                                            <div class="flex justify-between mb-2">
-                                                <span class="text-gray-600">Logement</span>
-                                                <span class="font-semibold">{{ $annonce->titre }}</span>
-                                            </div>
-                                            <div class="border-t pt-3 mt-3">
-                                                <div class="flex justify-between mb-2">
-                                                    <span class="text-gray-600" x-text="`${nights} nuit${nights > 1 ? 's' : ''}`"></span>
-                                                    <span class="font-semibold" x-text="`${nights} × ${pricePerNight} DH`"></span>
-                                                </div>
-                                                <div class="flex justify-between text-lg font-bold border-t pt-2">
-                                                    <span>Total</span>
-                                                    <span class="text-rose-500" x-text="`${totalPrice} DH`"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex gap-3">
-                                            <button type="button" @click="showModal = false" class="flex-1 px-4 py-2 border rounded-lg font-semibold hover:bg-gray-50 transition">Annuler</button>
-                                            <button type="button" @click="$el.closest('form').submit()" class="flex-1 px-4 py-2 bg-rose-500 text-white rounded-lg font-semibold hover:bg-rose-600 transition">Confirmer</button>
-                                        </div>
-                                    </div>
-                                </div>
                             </form>
                             <script>
                                 flatpickr("#start_date", {
