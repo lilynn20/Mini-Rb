@@ -78,7 +78,10 @@
                         @foreach($amenities as $amenity)
                             <label class="flex items-center cursor-pointer">
                                 <input type="checkbox" name="amenities[]" value="{{ $amenity->id }}" class="rounded">
-                                <span class="ml-2 text-gray-700">{{ $amenity->icon }} {{ $amenity->name }}</span>
+                                <span class="ml-2 text-gray-700 flex items-center gap-2">
+                                    <x-amenity-icon :name="$amenity->name" class="w-5 h-5" />
+                                    {{ $amenity->name }}
+                                </span>
                             </label>
                         @endforeach
                     </div>

@@ -170,7 +170,7 @@
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                             @foreach($annonce->amenities as $amenity)
                                 <div class="flex items-center">
-                                    <span class="text-3xl mr-3">{{ $amenity->icon }}</span>
+                                    <x-amenity-icon :name="$amenity->name" class="w-6 h-6 mr-3" />
                                     <span class="text-gray-700">{{ $amenity->name }}</span>
                                 </div>
                             @endforeach

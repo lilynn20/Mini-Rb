@@ -69,19 +69,32 @@
             </div>
 
             {{-- Stats --}}
-            <div class="grid grid-cols-3 gap-4 mb-8 border-t pt-6">
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-rose-500">{{ $user->annonces->count() }}</p>
-                    <p class="text-gray-500 text-sm">Annonces publiées</p>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8 border-t pt-6">
+                <div class="rounded-xl bg-rose-50 p-3 text-center">
+                    <p class="text-2xl font-bold text-rose-600">{{ $profileStats['annonces'] }}</p>
+                    <p class="text-xs text-gray-500">Annonces</p>
                 </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-rose-500">{{ \App\Models\Reservation::where('user_id', $user->id)->count() }}</p>
-                    <p class="text-gray-500 text-sm">Réservations effectuées</p>
+                <div class="rounded-xl bg-blue-50 p-3 text-center">
+                    <p class="text-2xl font-bold text-blue-600">{{ $profileStats['reservations'] }}</p>
+                    <p class="text-xs text-gray-500">Réservations</p>
                 </div>
-                <div class="text-center">
-                    <p class="text-2xl font-bold text-rose-500">{{ $user->created_at->format('Y') }}</p>
-                    <p class="text-gray-500 text-sm">Membre depuis</p>
+                <div class="rounded-xl bg-purple-50 p-3 text-center">
+                    <p class="text-2xl font-bold text-purple-600">{{ $profileStats['favorites'] }}</p>
+                    <p class="text-xs text-gray-500">Favoris</p>
                 </div>
+                <div class="rounded-xl bg-amber-50 p-3 text-center">
+                    <p class="text-2xl font-bold text-amber-600">{{ $profileStats['reviews'] }}</p>
+                    <p class="text-xs text-gray-500">Avis publiés</p>
+                </div>
+                <div class="rounded-xl bg-emerald-50 p-3 text-center">
+                    <p class="text-2xl font-bold text-emerald-600">{{ $profileStats['memberSinceYear'] }}</p>
+                    <p class="text-xs text-gray-500">Membre depuis</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                <a href="{{ route('reservations.index') }}" class="rounded-xl border px-4 py-3 text-sm font-semibold text-gray-700 hover:border-rose-300 hover:text-rose-500 transition">Voir mon tableau de bord réservations</a>
+                <a href="{{ route('annonces.create') }}" class="rounded-xl border px-4 py-3 text-sm font-semibold text-gray-700 hover:border-rose-300 hover:text-rose-500 transition">Publier une nouvelle annonce</a>
             </div>
 
             {{-- Edit Form --}}

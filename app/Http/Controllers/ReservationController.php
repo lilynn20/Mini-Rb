@@ -9,6 +9,7 @@ use App\Mail\ReservationStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Carbon;
 
@@ -18,6 +19,7 @@ class ReservationController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $today = Carbon::today();
 
         $mesReservations = Reservation::with(['annonce', 'avis'])
             ->where('user_id', $user->id)
@@ -31,7 +33,24 @@ class ReservationController extends Controller
             ->latest()
             ->get();
 
-        return view('reservations.index', compact('mesReservations', 'reservationsRecues'));
+        $travelerStats = [
+            'total' => $mesReservations->count(),
+            'pending' => $mesReservations->where('status', 'pending')->count(),
+            'upcoming' => $mesReservations
+                ->where('status', 'accepted')
+                ->filter(fn ($r) => Carbon::parse($r->start_date)->greaterThanOrEqualTo($today))
+                ->count(),
+            'spent' => $mesReservations->where('status', 'accepted')->sum('total_price'),
+        ];
+
+        $hostStats = [
+            'received' => $reservationsRecues->count(),
+            'pending' => $reservationsRecues->where('status', 'pending')->count(),
+            'accepted' => $reservationsRecues->where('status', 'accepted')->count(),
+            'revenue' => $reservationsRecues->where('status', 'accepted')->sum('total_price'),
+        ];
+
+        return view('reservations.index', compact('mesReservations', 'reservationsRecues', 'travelerStats', 'hostStats'));
     }
 
     // Store a new reservation with availability check
@@ -114,6 +133,9 @@ class ReservationController extends Controller
         $reservation->status = 'accepted';
         $reservation->save();
 
+        // Generate and store a receipt snapshot at acceptance time.
+        $this->storeReceiptPdf($reservation);
+
         // Notify traveler
         Mail::to($reservation->user->email)->send(new ReservationStatusChanged($reservation));
 
@@ -172,5 +194,11 @@ class ReservationController extends Controller
         }
 
         return Pdf::loadView('receipts.reservation', compact('reservation'))->download("receipt-{$reservation->id}.pdf");
+    }
+
+    private function storeReceiptPdf(Reservation $reservation): void
+    {
+        $content = Pdf::loadView('receipts.reservation', compact('reservation'))->output();
+        Storage::disk('local')->put("receipts/reservation-{$reservation->id}.pdf", $content);
     }
 }

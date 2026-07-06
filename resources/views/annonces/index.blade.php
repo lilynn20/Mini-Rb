@@ -154,26 +154,11 @@
                                 <span class="ml-1 font-bold hidden md:inline">Chercher</span>
                             </button>
                         </div>
-                        @if(request()->anyFilled(['ville', 'prix_max', 'nb_personne', 'start_date', 'end_date', 'amenities']))
+                        @if(request()->anyFilled(['ville', 'prix_max', 'nb_personne', 'start_date', 'end_date']))
                             <a href="{{ route('home') }}" class="text-xs text-gray-400 hover:text-rose-500 underline ml-2 pr-2">Réinitialiser</a>
                         @endif
                     </form>
                 </div>
-
-                @if($amenities->count())
-                    <div class="mt-4 bg-white rounded-2xl shadow-xl border p-6">
-                        <h3 class="text-sm font-bold uppercase text-gray-600 mb-4">Équipements</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            @foreach($amenities as $amenity)
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="checkbox" name="amenities[]" value="{{ $amenity->id }}" form="search-form" @if(is_array(request('amenities')) && in_array($amenity->id, request('amenities'))) checked @endif class="w-4 h-4 rounded">
-                                    <span class="text-sm text-gray-600">{{ $amenity->icon }} {{ $amenity->name }}</span>
-                                </label>
-                            @endforeach
-                        </div>
-                        <button type="submit" form="search-form" class="mt-4 bg-rose-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-rose-600 transition">Appliquer les filtres</button>
-                    </div>
-                @endif
             </div>
         </div>
 

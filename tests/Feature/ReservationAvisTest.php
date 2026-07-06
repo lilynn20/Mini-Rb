@@ -14,7 +14,7 @@ class ReservationAvisTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function a_user_can_make_a_reservation()
     {
         $host = User::factory()->create(['role' => 'hote']);
@@ -36,7 +36,7 @@ class ReservationAvisTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function overlapping_dates_are_blocked()
     {
         $host = User::factory()->create(['role' => 'hote']);
@@ -64,7 +64,7 @@ class ReservationAvisTest extends TestCase
         $response->assertSessionHasErrors('dates');
     }
 
-    /** @test */
+    #[Test]
     public function host_can_accept_a_reservation()
     {
         $host = User::factory()->create(['role' => 'hote']);
@@ -89,7 +89,7 @@ class ReservationAvisTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function host_can_refuse_a_reservation()
     {
         $host = User::factory()->create(['role' => 'hote']);
@@ -114,7 +114,7 @@ class ReservationAvisTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function traveler_can_cancel_a_reservation()
     {
         $host = User::factory()->create(['role' => 'hote']);

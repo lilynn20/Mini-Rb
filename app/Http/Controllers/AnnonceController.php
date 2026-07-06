@@ -30,13 +30,6 @@ class AnnonceController extends Controller
             $query->where('nombre_de_chambres', '>=', ceil($request->nb_personne / 2));
         }
 
-        if ($request->filled('amenities')) {
-            $amenities = is_array($request->amenities) ? $request->amenities : [$request->amenities];
-            $query->whereHas('amenities', function ($q) use ($amenities) {
-                $q->whereIn('id', $amenities);
-            }, '=', count($amenities));
-        }
-
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereDoesntHave('reservations', function ($q) use ($request) {
                 $q->whereIn('status', ['pending', 'accepted'])
@@ -52,8 +45,7 @@ class AnnonceController extends Controller
         }
 
         $annonces = $query->paginate(9)->withQueryString();
-        $amenities = Cache::remember('amenities_list', 3600, fn() => Amenity::all());
-        return view('annonces.index', compact('annonces', 'amenities'));
+        return view('annonces.index', compact('annonces'));
     }
 
     public function create()

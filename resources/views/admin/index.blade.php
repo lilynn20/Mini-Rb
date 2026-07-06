@@ -36,31 +36,133 @@
             </div>
         @endif
 
-        {{-- Stats --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10">
-            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
-                <p class="text-3xl sm:text-4xl font-bold text-rose-500">{{ $stats['totalUsers'] }}</p>
-                <p class="text-gray-500 mt-1 text-sm sm:text-base">Utilisateurs</p>
+        <div class="mb-8 sm:mb-10">
+            <div class="mb-4 flex flex-col gap-1">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Tableau de Bord Administrateur</h1>
+                <p class="text-sm text-gray-500">Vue d'ensemble de l'activité de la plateforme.</p>
             </div>
-            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
-                <p class="text-3xl sm:text-4xl font-bold text-blue-500">{{ $stats['totalAnnonces'] }}</p>
-                <p class="text-gray-500 mt-1 text-sm sm:text-base">Annonces</p>
+
+            {{-- Stats --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-6">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border">
+                    <p class="text-sm text-gray-500">Utilisateurs</p>
+                    <p class="mt-2 text-3xl font-bold text-rose-500">{{ $stats['totalUsers'] }}</p>
+                    <p class="mt-2 text-xs text-gray-400">Hôtes actifs: {{ $stats['activeHosts'] }}</p>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm border">
+                    <p class="text-sm text-gray-500">Annonces</p>
+                    <p class="mt-2 text-3xl font-bold text-blue-500">{{ $stats['totalAnnonces'] }}</p>
+                    <p class="mt-2 text-xs text-gray-400">Capacité totale publiée</p>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm border">
+                    <p class="text-sm text-gray-500">Réservations</p>
+                    <p class="mt-2 text-3xl font-bold text-green-500">{{ $stats['totalReservations'] }}</p>
+                    <p class="mt-2 text-xs text-gray-400">Taux d'acceptation: {{ $stats['acceptanceRate'] }}%</p>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm border">
+                    <p class="text-sm text-gray-500">Chiffre d'affaires</p>
+                    <p class="mt-2 text-3xl font-bold text-purple-500">{{ number_format($stats['totalRevenue'], 0, ',', ' ') }} DH</p>
+                    <p class="mt-2 text-xs text-gray-400">Panier moyen: {{ number_format($stats['averageBasket'], 0, ',', ' ') }} DH</p>
+                </div>
             </div>
-            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
-                <p class="text-3xl sm:text-4xl font-bold text-green-500">{{ $stats['totalReservations'] }}</p>
-                <p class="text-gray-500 mt-1 text-sm sm:text-base">Réservations totales</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-semibold text-gray-900">Revenus des 6 derniers mois</h2>
+                        <span class="text-xs text-gray-400">Réservations acceptées</span>
+                    </div>
+                    @php
+                        $maxRevenue = max(1, $monthlyRevenue->max('amount'));
+                    @endphp
+                    <div class="space-y-3">
+                        @foreach($monthlyRevenue as $item)
+                            <div>
+                                <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                    <span>{{ $item['label'] }}</span>
+                                    <span>{{ number_format($item['amount'], 0, ',', ' ') }} DH</span>
+                                </div>
+                                <div class="h-2 rounded-full bg-gray-100 overflow-hidden">
+                                    <div class="h-full bg-rose-500" style="width: {{ round(($item['amount'] / $maxRevenue) * 100) }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border">
+                    <h2 class="font-semibold text-gray-900 mb-4">Santé de la plateforme</h2>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500">En attente</span>
+                            <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-semibold">{{ $stats['pendingReservations'] }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500">Acceptées</span>
+                            <span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-semibold">{{ $stats['acceptedReservations'] }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500">Taux d'acceptation</span>
+                            <span class="font-semibold text-gray-900">{{ $stats['acceptanceRate'] }}%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
-                <p class="text-3xl sm:text-4xl font-bold text-yellow-500">{{ $stats['pendingReservations'] }}</p>
-                <p class="text-gray-500 mt-1 text-sm sm:text-base">En attente</p>
-            </div>
-            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
-                <p class="text-3xl sm:text-4xl font-bold text-emerald-500">{{ $stats['acceptedReservations'] }}</p>
-                <p class="text-gray-500 mt-1 text-sm sm:text-base">Acceptées</p>
-            </div>
-            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border text-center hover:shadow-md transition">
-                <p class="text-3xl sm:text-4xl font-bold text-purple-500">{{ $stats['totalRevenue'] }} DH</p>
-                <p class="text-gray-500 mt-1 text-sm sm:text-base">Chiffre d'affaires</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-semibold text-gray-900">Top villes (revenus)</h2>
+                        <span class="text-xs text-gray-400">Top 5</span>
+                    </div>
+                    @if($topCities->isEmpty())
+                        <p class="text-sm text-gray-400">Aucune donnée disponible pour le moment.</p>
+                    @else
+                        <div class="space-y-3">
+                            @php
+                                $maxCityRevenue = max(1, $topCities->max('revenue'));
+                            @endphp
+                            @foreach($topCities as $city)
+                                <div>
+                                    <div class="flex items-center justify-between text-sm mb-1">
+                                        <span class="font-medium text-gray-700">{{ $city->ville }}</span>
+                                        <span class="text-gray-500">{{ number_format($city->revenue, 0, ',', ' ') }} DH</span>
+                                    </div>
+                                    <div class="h-2 rounded-full bg-gray-100 overflow-hidden mb-1">
+                                        <div class="h-full bg-purple-500" style="width: {{ round(($city->revenue / $maxCityRevenue) * 100) }}%"></div>
+                                    </div>
+                                    <p class="text-xs text-gray-400">{{ $city->reservations_count }} réservation(s) acceptée(s)</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 shadow-sm border">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-semibold text-gray-900">Activité récente</h2>
+                        <span class="text-xs text-gray-400">6 dernières</span>
+                    </div>
+                    <div class="space-y-3">
+                        @foreach($recentReservations as $r)
+                            @php
+                                $activityColor = [
+                                    'pending' => 'bg-yellow-100 text-yellow-700',
+                                    'accepted' => 'bg-emerald-100 text-emerald-700',
+                                    'refused' => 'bg-red-100 text-red-700',
+                                    'cancelled' => 'bg-gray-100 text-gray-600',
+                                ][$r->status] ?? 'bg-gray-100 text-gray-600';
+                            @endphp
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">{{ $r->annonce->titre }}</p>
+                                    <p class="text-xs text-gray-400">{{ $r->user->name }} • {{ \Carbon\Carbon::parse($r->created_at)->format('d/m/Y H:i') }}</p>
+                                </div>
+                                <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $activityColor }}">{{ ucfirst($r->status) }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
 

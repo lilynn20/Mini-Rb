@@ -76,7 +76,6 @@ class AmenitiesTest extends TestCase
 
         foreach ($amenities as $amenity) {
             $response->assertSee($amenity->name);
-            $response->assertSee($amenity->icon);
         }
     }
 

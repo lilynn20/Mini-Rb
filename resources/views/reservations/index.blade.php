@@ -37,7 +37,56 @@
             </div>
         @endif
 
-        <h1 class="text-3xl font-bold mb-10">Mes Réservations</h1>
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold">Mes Réservations</h1>
+            <p class="text-gray-500 mt-1">Suivez vos voyages et les demandes reçues sur vos annonces.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white rounded-2xl shadow-sm border p-6">
+                <h2 class="font-semibold text-gray-900 mb-4">Vue Voyageur</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs text-gray-500">Réservations</p>
+                        <p class="text-2xl font-bold text-rose-500">{{ $travelerStats['total'] }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">En attente</p>
+                        <p class="text-2xl font-bold text-yellow-500">{{ $travelerStats['pending'] }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Voyages à venir</p>
+                        <p class="text-2xl font-bold text-blue-500">{{ $travelerStats['upcoming'] }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Total dépensé</p>
+                        <p class="text-2xl font-bold text-emerald-600">{{ number_format($travelerStats['spent'], 0, ',', ' ') }} DH</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border p-6">
+                <h2 class="font-semibold text-gray-900 mb-4">Vue Hôte</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs text-gray-500">Demandes reçues</p>
+                        <p class="text-2xl font-bold text-rose-500">{{ $hostStats['received'] }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">À traiter</p>
+                        <p class="text-2xl font-bold text-yellow-500">{{ $hostStats['pending'] }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Acceptées</p>
+                        <p class="text-2xl font-bold text-emerald-600">{{ $hostStats['accepted'] }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Revenus hôte</p>
+                        <p class="text-2xl font-bold text-blue-500">{{ number_format($hostStats['revenue'], 0, ',', ' ') }} DH</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         {{-- TAB: Mes voyages --}}
         <div class="mb-14">
@@ -97,6 +146,14 @@
                                 @method('PATCH')
                                 <button type="submit" class="text-sm text-red-500 hover:text-red-700 font-semibold underline">Annuler</button>
                             </form>
+                        @endif
+
+                        @if($reservation->status === 'accepted')
+                            <a href="{{ route('reservations.receipt', $reservation->id) }}"
+                               class="text-sm text-blue-600 hover:text-blue-800 font-semibold underline"
+                               target="_blank" rel="noopener">
+                                Télécharger le reçu (PDF)
+                            </a>
                         @endif
 
                         {{-- Leave review if accepted and no review yet --}}
@@ -170,6 +227,12 @@
                                     <button type="submit" class="bg-red-100 text-red-600 px-4 py-1 rounded-lg text-sm font-semibold hover:bg-red-200 transition">Refuser</button>
                                 </form>
                             </div>
+                        @elseif($reservation->status === 'accepted')
+                            <a href="{{ route('reservations.receipt', $reservation->id) }}"
+                               class="text-sm text-blue-600 hover:text-blue-800 font-semibold underline"
+                               target="_blank" rel="noopener">
+                                Télécharger le reçu (PDF)
+                            </a>
                         @endif
                     </div>
                 </div>

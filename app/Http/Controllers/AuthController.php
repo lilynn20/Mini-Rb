@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Mail\WelcomeMail;
 use App\Mail\VerifyEmailMail;
+use App\Models\Reservation;
+use App\Models\Avis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -100,9 +102,20 @@ class AuthController extends Controller
 
         return back()->with('success', 'Lien de vérification renvoyé !');
     }
-        public function profile()
+
+    public function profile()
     {
-        return view('auth.profile', ['user' => Auth::user()]);
+        $user = Auth::user();
+
+        $profileStats = [
+            'annonces' => $user->annonces()->count(),
+            'reservations' => Reservation::where('user_id', $user->id)->count(),
+            'favorites' => $user->favorites()->count(),
+            'reviews' => Avis::where('user_id', $user->id)->count(),
+            'memberSinceYear' => $user->created_at->format('Y'),
+        ];
+
+        return view('auth.profile', compact('user', 'profileStats'));
     }
 
     public function updateProfile(Request $request)
